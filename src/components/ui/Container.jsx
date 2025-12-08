@@ -1,9 +1,9 @@
-import React from "react";
-
-const Container = () => {
+const Container = ({ className = "", children }) => {
   return (
-    <div>
-      <h2>Container text will go here</h2>
+    <div
+      className={`${className} max-w-screen-2xl mx-auto xl:px-20 md:px-10 sm:px-2 px-4`}
+    >
+      {children}
     </div>
   );
 };

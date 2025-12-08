@@ -1,17 +1,19 @@
 import React from "react";
 import { Outlet } from "react-router";
+import Navbar from "../components/Shared/Navbar/Navbar";
+import Footer from "../components/Shared/Footer/Footer";
 
 const Mainlayout = () => {
   return (
     <div>
       <header>
-        <h2>Navbar will go here</h2>
+        <Navbar />
       </header>
       <main>
         <Outlet />
       </main>
       <footer>
-        <h2>footer text will go here</h2>
+        <Footer />
       </footer>
     </div>
   );
