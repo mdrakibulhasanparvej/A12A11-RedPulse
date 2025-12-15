@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import SkeletonRow from "../../../components/ui/Loading/ManageUsers/ManageUsers";
+import Swal from "sweetalert2";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
   const [currentPage, setCurrentPage] = useState(0);
   const limit = 10;
 
-  const { data, isLoading, error } = useQuery({
+  const { refetch, data, isLoading, error } = useQuery({
     queryKey: ["users", currentPage, limit],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/all-users?limit=${limit}&skip=${currentPage * limit}`
+        `/users?limit=${limit}&skip=${currentPage * limit}`
       );
       return res.data;
     },
@@ -22,6 +23,48 @@ const ManageUsers = () => {
   const users = data?.users || [];
   const totalUsers = data?.totalUsers || 0;
   const totalPage = Math.ceil(totalUsers / limit);
+
+  const handleRoleChange = (user, newRole) => {
+    // Prevent unnecessary API call
+    if (user.role === newRole) return;
+
+    // Show confirmation first
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, change it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Call API only after confirmation
+        axiosSecure
+          .patch(`/users/${user._id}`, { role: newRole })
+          .then((res) => {
+            if (res.data.modifiedCount) {
+              refetch();
+
+              // Show success alert
+              Swal.fire({
+                icon: "success",
+                title: `${user.name} is now ${newRole}`,
+                showConfirmButton: false,
+                timer: 1200,
+              });
+            }
+          })
+          .catch((err) => {
+            Swal.fire({
+              icon: "error",
+              title: "Failed to update role",
+              text: err.response?.data?.message || err.message,
+            });
+          });
+      }
+    });
+  };
 
   return (
     <div className="overflow-x-auto min-h-70vh max-w-[880px]">
@@ -82,9 +125,47 @@ const ManageUsers = () => {
 
                   <td>{user.role}</td>
 
-                  <td>
-                    <button className="btn btn-ghost btn-xs">Details</button>
-                  </td>
+                  <th className="flex flex-col items-center space-y-1">
+                    {/* DONOR → ADMIN */}
+                    {user.role === "donor" && (
+                      <button
+                        className="btn w-full h-full btn-info text-white btn-xs"
+                        onClick={() => handleRoleChange(user, "admin")}
+                      >
+                        Make Admin
+                      </button>
+                    )}
+
+                    {/* ADMIN → VOLUNTEER */}
+                    {user.role === "admin" && (
+                      <button
+                        className="btn w-full h-full btn-warning text-white btn-xs"
+                        onClick={() => handleRoleChange(user, "volunteer")}
+                      >
+                        Make Volunteer
+                      </button>
+                    )}
+
+                    {/* VOLUNTEER → ADMIN */}
+                    {user.role === "volunteer" && (
+                      <button
+                        className="btn w-full h-full btn-info text-white btn-xs"
+                        onClick={() => handleRoleChange(user, "admin")}
+                      >
+                        Make Admin
+                      </button>
+                    )}
+
+                    {user.role === "active" ? (
+                      <button className="btn h-full w-full btn-error text-white btn-xs">
+                        Unblock
+                      </button>
+                    ) : (
+                      <button className="btn h-full w-full btn-error text-white btn-xs">
+                        Block
+                      </button>
+                    )}
+                  </th>
                 </tr>
               ))}
         </tbody>

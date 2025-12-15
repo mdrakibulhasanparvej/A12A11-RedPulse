@@ -5,9 +5,10 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Statistics from "../pages/Dashboard/common/Statistics";
+import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ErrorPage from "../pages/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
-import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
+import DashboardSkeleton from "../components/ui/Loading/Dashborad/DashboardSkeleton";
 
 const router = createBrowserRouter([
   {
@@ -32,8 +33,8 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <PrivateRoute>
-        <DashboardLayout />,
+      <PrivateRoute skeleton={<DashboardSkeleton />}>
+        <DashboardLayout />
       </PrivateRoute>
     ),
     children: [
@@ -48,4 +49,5 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 export default router;
