@@ -17,7 +17,7 @@ const Banner = () => {
             <div
               className="w-40 h-48 sm:w-96 sm:h-[500px] lg:w-[350px] lg:h-[455px]
                           bg-gradient-to-b from-[#B32346]/90 to-[#6A0B37]
-                          rounded-b-full shadow-2xl 
+                          rounded-b-full shadow-2xl
                           -rotate-6 lg:-rotate-12"
             />
           </div>

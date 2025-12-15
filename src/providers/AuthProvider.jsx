@@ -22,7 +22,7 @@ const AuthProvider = ({ children }) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  const signIn = (email, password) => {
+  const logIn = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
@@ -37,11 +37,8 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  const updateUserProfile = (name, photo) => {
-    return updateProfile(auth.currentUser, {
-      displayName: name,
-      photoURL: photo,
-    });
+  const updateUserProfile = ({ displayName, photoURL }) => {
+    return updateProfile(auth.currentUser, { displayName, photoURL });
   };
 
   // onAuthStateChange
@@ -61,7 +58,7 @@ const AuthProvider = ({ children }) => {
     loading,
     setLoading,
     createUser,
-    signIn,
+    logIn,
     signInWithGoogle,
     logOut,
     updateUserProfile,
