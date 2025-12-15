@@ -1,41 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import SkeletonRow from "../../../components/ui/Loading/ManageUsers/ManageUsers";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
+  const [currentPage, setCurrentPage] = useState(0);
+  const limit = 10;
 
-  const {
-    data: users = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["users"],
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["users", currentPage, limit],
     queryFn: async () => {
-      const res = await axiosSecure.get("/all-users");
+      const res = await axiosSecure.get(
+        `/all-users?limit=${limit}&skip=${currentPage * limit}`
+      );
       return res.data;
     },
+    keepPreviousData: true,
   });
 
+  const users = data?.users || [];
+  const totalUsers = data?.totalUsers || 0;
+  const totalPage = Math.ceil(totalUsers / limit);
+
   return (
-    <div className="overflow-x-auto w-full">
-      <table className="table table-zebra">
-        {/* head */}
+    <div className="overflow-x-auto min-h-70vh max-w-[880px]">
+      <table className="table-zebra table table-md table-pin-rows table-pin-cols">
         <thead className="bg-base-200 dark:bg-gray-800">
           <tr>
+            <th>#</th>
             <th>User</th>
             <th>Blood Info</th>
             <th>Status</th>
+            <th>Role</th>
             <th>Action</th>
           </tr>
         </thead>
 
         <tbody>
           {isLoading
-            ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />) // 5 skeleton rows
+            ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
             : users.map((user, index) => (
-                <tr key={index} className="hover">
+                <tr key={user._id} className="hover">
+                  <td>{currentPage * limit + index + 1}</td>
+
                   <td>
                     <div className="flex items-center gap-3">
                       <div className="avatar">
@@ -49,6 +57,7 @@ const ManageUsers = () => {
                       </div>
                     </div>
                   </td>
+
                   <td>
                     <span className="badge badge-error badge-sm">
                       {user.bloodGroup}
@@ -58,6 +67,7 @@ const ManageUsers = () => {
                       {user.upazila}, {user.district}
                     </span>
                   </td>
+
                   <td>
                     <span
                       className={`badge ${
@@ -69,25 +79,42 @@ const ManageUsers = () => {
                       {user.status}
                     </span>
                   </td>
+
+                  <td>{user.role}</td>
+
                   <td>
                     <button className="btn btn-ghost btn-xs">Details</button>
                   </td>
                 </tr>
               ))}
         </tbody>
-
-        {/* foot */}
-        <tfoot className="bg-base-200 dark:bg-gray-800">
-          <tr>
-            <th>User</th>
-            <th>Blood Info</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </tfoot>
       </table>
 
-      {/* Error message */}
+      {/* PAGINATION */}
+      <div className="flex justify-center flex-wrap gap-3 py-10">
+        {currentPage > 0 && (
+          <button onClick={() => setCurrentPage((p) => p - 1)} className="btn">
+            Prev
+          </button>
+        )}
+
+        {[...Array(totalPage).keys()].map((i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i)}
+            className={`btn ${i === currentPage ? "btn" : ""}`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        {currentPage < totalPage - 1 && (
+          <button onClick={() => setCurrentPage((p) => p + 1)} className="btn">
+            Next
+          </button>
+        )}
+      </div>
+
       {error && (
         <p className="text-center text-red-500 mt-4">Failed to load users ❌</p>
       )}
