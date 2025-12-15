@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import logo from "../../../assets/Logo.png";
 
 // Icons
 import { GrLogout } from "react-icons/gr";
 import { AiOutlineBars } from "react-icons/ai";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { BsGraphUp } from "react-icons/bs";
 
 // Optional: Add a fallback avatar if user.photoURL is missing
 import useAuth from "../../../hooks/useAuth";
+import MenuItem from "./Menu/MenuItem";
+import AdminMenu from "./Menu/AdminMenu";
 
 const Sidebar = () => {
   const { logOut, user } = useAuth();
@@ -35,10 +39,21 @@ const Sidebar = () => {
       <div className="bg-gray-100 text-gray-800 flex justify-between md:hidden">
         <div>
           <div className="block cursor-pointer p-4 font-bold">
-            <Link to="/">
-              {/* Replace with your logo */}
-              {/* <img src={logo} alt="logo" width="100" height="100" /> */}
-              Logo
+            <Link
+              to="/"
+              className="md:text-2xl flex items-center font-extrabold"
+            >
+              <span>
+                <img
+                  src={logo}
+                  className="w-4 h-4  md:w-10 md:h-10 mr-6 md:mr-2"
+                  alt="rent_wheels_logo"
+                />
+              </span>
+              RED
+              <span className="bg-linear-to-r from-[#6A0B37] to-[#B32346] bg-clip-text text-transparent">
+                PULSE
+              </span>
             </Link>
           </div>
         </div>
@@ -61,7 +76,7 @@ const Sidebar = () => {
         <div>
           <div className="flex flex-col items-center">
             {/* Avatar */}
-            <div className="w-20 h-20 rounded-full ring-4 ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden mb-4">
+            <div className="w-20 h-20 rounded-full ring-2 ring-red-800 ring-offset-base-100 ring-offset-2 overflow-hidden mb-4">
               <img
                 alt="User avatar"
                 referrerPolicy="no-referrer"
@@ -86,8 +101,18 @@ const Sidebar = () => {
         <div className="flex-1 mt-6">
           <nav className="space-y-2">
             {/* Example Menu Items - Uncomment and customize as needed */}
-            {/* <MenuItem icon={BsGraphUp} label="Statistics" address="/dashboard" /> */}
-            {/* <MenuItem icon={FcSettings} label="Profile" address="/dashboard/profile" /> */}
+            <nav>
+              {/* Common Menu */}
+              <MenuItem
+                icon={BsGraphUp}
+                label="Statistics"
+                address="/dashboard"
+              />
+              {/* Role-Based Menu */}
+              {/* <CustomerMenu />
+              <SellerMenu /> */}
+              <AdminMenu />
+            </nav>
 
             {/* Placeholder for role-based menu */}
             <div className="text-sm text-gray-500 text-center">
