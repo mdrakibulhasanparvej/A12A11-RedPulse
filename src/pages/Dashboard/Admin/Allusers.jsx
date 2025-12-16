@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import SkeletonRow from "../../../components/ui/Loading/ManageUsers/ManageUsers";
+import AllusersTableRow from "../../../components/ui/Loading/ManageUsers/AllusersTableRow";
 import Swal from "sweetalert2";
 import { FaFilter } from "react-icons/fa";
 
@@ -156,7 +156,7 @@ const Allusers = () => {
 
         <tbody>
           {isLoading
-            ? [...Array(5)].map((_, i) => <SkeletonRow key={i} />)
+            ? [...Array(5)].map((_, i) => <AllusersTableRow key={i} />)
             : users.map((user, index) => (
                 <tr key={user._id} className="hover">
                   <td>{currentPage * limit + index + 1}</td>

@@ -1,14 +1,23 @@
 import { createBrowserRouter } from "react-router";
+import { Suspense, lazy } from "react";
+
 import Mainlayout from "../layouts/Mainlayout";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Statistics from "../pages/Dashboard/common/Statistics";
-import Allusers from "../pages/Dashboard/Admin/Allusers";
 import ErrorPage from "../pages/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
 import DashboardSkeleton from "../components/ui/Loading/Dashborad/DashboardSkeleton";
+import Profile from "../pages/Dashboard/common/Profile";
+
+// lazy loaded pages
+const Allusers = lazy(() => import("../pages/Dashboard/Admin/Allusers"));
+
+const AllBloodDonationRequest = lazy(
+  () => import("../pages/Dashboard/Admin/AllBloodDonationRequest")
+);
 
 const router = createBrowserRouter([
   {
@@ -44,7 +53,15 @@ const router = createBrowserRouter([
       },
       {
         path: "all-users",
-        Component: Allusers,
+        element: <Allusers />,
+      },
+      {
+        path: "all-blood-donation-request",
+        element: <AllBloodDonationRequest />,
+      },
+      {
+        path: "profile",
+        Component: Profile,
       },
     ],
   },

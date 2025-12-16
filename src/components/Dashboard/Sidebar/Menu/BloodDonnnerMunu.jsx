@@ -1,9 +1,17 @@
 import React from "react";
+import MenuItem from "./MenuItem";
+import { FaUserCog } from "react-icons/fa";
 
 const BloodDonnnerMunu = () => {
   return (
     <div>
-      <h2>Customer Menu text will go here</h2>
+      <MenuItem icon={FaUserCog} label="My Donation Req" address="all-users" />
+      <MenuItem
+        icon={FaUserCog}
+        label="Create Donation Req"
+        address="all-users"
+      />
+      <MenuItem icon={FaUserCog} label="Profile" address="profile" />
     </div>
   );
 };

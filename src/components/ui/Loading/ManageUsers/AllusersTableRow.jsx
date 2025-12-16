@@ -1,6 +1,6 @@
 import React from "react";
 
-const SkeletonRow = () => (
+const AllusersTableRow = () => (
   <tr className="animate-pulse">
     {/* # column */}
     <td>
@@ -43,4 +43,4 @@ const SkeletonRow = () => (
   </tr>
 );
 
-export default SkeletonRow;
+export default AllusersTableRow;

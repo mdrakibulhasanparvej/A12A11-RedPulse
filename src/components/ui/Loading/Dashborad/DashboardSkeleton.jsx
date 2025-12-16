@@ -29,14 +29,7 @@ const DashboardSkeleton = () => {
       </div>
 
       {/* Main Content Skeleton */}
-      <div className="flex-1 md:ml-64 p-5 space-y-6">
-        {/* Header */}
-        <div className="h-8 w-48 bg-gray-300 dark:bg-gray-700 rounded" />
-        {/* Filters / Buttons */}
-        <div className="flex gap-4">
-          <div className="h-10 w-24 bg-gray-300 dark:bg-gray-700 rounded" />
-          <div className="h-10 w-24 bg-gray-300 dark:bg-gray-700 rounded" />
-        </div>
+      <div className="flex flex-col min-h-screen w-full p-5 space-y-6">
         {/* Table Skeleton */}
         <div className="overflow-x-auto">
           <table className="table table-zebra w-full">
@@ -44,23 +37,32 @@ const DashboardSkeleton = () => {
               <tr>
                 {[...Array(6)].map((_, i) => (
                   <th key={i}>
-                    <div className="h-4 w-16 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                    <div className="h-6 w-16 bg-gray-300 dark:bg-gray-700 rounded"></div>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {[...Array(5)].map((_, i) => (
+              {[...Array(9)].map((_, i) => (
                 <tr key={i}>
                   {[...Array(6)].map((_, j) => (
                     <td key={j}>
-                      <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-full"></div>
+                      <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-full"></div>
                     </td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* pagination */}
+        <div className="flex gap-5 justify-center items-center">
+          {[...Array(6)].map((_, i) => (
+            <th key={i}>
+              <div className="h-6 w-16 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            </th>
+          ))}
         </div>
       </div>
     </div>
