@@ -8,8 +8,9 @@ const useUser = () => {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["user", user?.email],
-    enabled: !!user?.email, // only run if user is logged in
+    enabled: !!user?.email, // Only fetch if logged in
     queryFn: async () => {
+      if (!user?.email) throw new Error("User not logged in");
       const res = await axiosSecure.get(`/users/${user.email}`);
       return res.data;
     },

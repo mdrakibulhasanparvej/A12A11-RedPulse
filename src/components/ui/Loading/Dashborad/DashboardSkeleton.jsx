@@ -37,7 +37,7 @@ const DashboardSkeleton = () => {
               <tr>
                 {[...Array(6)].map((_, i) => (
                   <th key={i}>
-                    <div className="h-6 w-16 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                    <div className="h-6 w-16 bg-gray-300 dark:bg-gray-700 rounded mx-auto"></div>
                   </th>
                 ))}
               </tr>
@@ -56,12 +56,13 @@ const DashboardSkeleton = () => {
           </table>
         </div>
 
-        {/* pagination */}
+        {/* Pagination Skeleton */}
         <div className="flex gap-5 justify-center items-center">
           {[...Array(6)].map((_, i) => (
-            <th key={i}>
-              <div className="h-6 w-16 bg-gray-300 dark:bg-gray-700 rounded"></div>
-            </th>
+            <div
+              key={i}
+              className="h-6 w-16 bg-gray-300 dark:bg-gray-700 rounded"
+            ></div>
           ))}
         </div>
       </div>

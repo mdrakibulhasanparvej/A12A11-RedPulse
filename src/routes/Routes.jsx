@@ -11,6 +11,8 @@ import ErrorPage from "../pages/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
 import DashboardSkeleton from "../components/ui/Loading/Dashborad/DashboardSkeleton";
 import Profile from "../pages/Dashboard/common/Profile";
+import MyDonationRequest from "../pages/Dashboard/Donner/MyDonationRequest";
+import CreateDonationRequest from "../pages/Dashboard/Donner/CreateDonationRequest";
 
 // lazy loaded pages
 const Allusers = lazy(() => import("../pages/Dashboard/Admin/Allusers"));
@@ -62,6 +64,14 @@ const router = createBrowserRouter([
       {
         path: "profile",
         Component: Profile,
+      },
+      {
+        path: "my-donation-requests",
+        Component: MyDonationRequest,
+      },
+      {
+        path: "create-donation-requet",
+        Component: CreateDonationRequest,
       },
     ],
   },

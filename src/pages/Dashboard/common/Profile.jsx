@@ -6,10 +6,12 @@ import useUser from "../../../hooks/useUser";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import axios from "axios";
 import toast from "react-hot-toast";
+import useAuth from "../../../hooks/useAuth";
 
 const Profile = () => {
   const { userData: dbUser, isLoading, refetch } = useUser();
   const axiosSecure = useAxiosSecure();
+  const { user: firebaseUser, updateUserProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
   const {
@@ -20,11 +22,15 @@ const Profile = () => {
     formState: { errors },
   } = useForm();
 
+  const avatarFile = watch("avatar");
+  const [preview, setPreview] = useState(dbUser?.avatar || "");
+
+  // Initialize form values when dbUser loads
   useEffect(() => {
     if (dbUser && isEditing) {
       reset({
         name: dbUser.name || "",
-        avatar: "", // file input
+        avatar: "",
         bloodGroup: dbUser.bloodGroup || "",
         district: dbUser.district || "",
         upazila: dbUser.upazila || "",
@@ -32,16 +38,33 @@ const Profile = () => {
     }
   }, [dbUser, isEditing, reset]);
 
+  // Live avatar preview
+  useEffect(() => {
+    if (avatarFile && avatarFile[0]) {
+      const url = URL.createObjectURL(avatarFile[0]);
+      setPreview(url);
+    } else if (dbUser?.avatar) {
+      setPreview(dbUser.avatar);
+    } else {
+      setPreview(null);
+    }
+  }, [avatarFile, dbUser]);
+
+  // Mutation to update profile
   const updateUserMutation = useMutation({
     mutationFn: async (data) => {
-      let photoURL = dbUser.avatar;
+      if (!firebaseUser?.email) throw new Error("User not logged in");
 
+      let photoURL = dbUser?.avatar || "";
+
+      // Upload new avatar if provided
       if (data.avatar && data.avatar[0]) {
         const formData = new FormData();
         formData.append("image", data.avatar[0]);
         const imageAPIURL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_imgBB_host}`;
         const imgRes = await axios.post(imageAPIURL, formData);
         photoURL = imgRes.data.data.url;
+        console.log(photoURL);
       }
 
       const updatedData = {
@@ -52,7 +75,20 @@ const Profile = () => {
         upazila: data.upazila,
       };
 
-      return axiosSecure.patch(`/users/${dbUser.email}`, updatedData);
+      // console.log(updatedData);
+
+      // Update backend
+      await axiosSecure.patch(
+        `/user-profile/${firebaseUser.email}`,
+        updatedData
+      );
+
+      // Update Firebase Auth profile
+      if (updateUserProfile) {
+        await updateUserProfile({ displayName: data.name, photoURL });
+      }
+
+      return updatedData;
     },
     onSuccess: () => {
       toast.success("Profile updated successfully!");
@@ -61,7 +97,7 @@ const Profile = () => {
     },
     onError: (err) => {
       console.error(err);
-      toast.error("Failed to update profile");
+      toast.error(err.message || "Failed to update profile");
     },
   });
 
@@ -77,54 +113,44 @@ const Profile = () => {
         <h2 className="px-6 text-2xl font-semibold text-gray-800 dark:text-white">
           My Profile
         </h2>
-        <p className="text-gray-500 dark:text-gray-400 text-sm"></p>
       </div>
 
       <motion.div
         className="p-6 rounded-2xl dark:border-gray-800 max-w-5xl mx-auto"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6 }}
       >
-        {/* Top Section */}
-        <motion.div
-          className="flex flex-col lg:flex-row items-center justify-between gap-6 border border-gray-400 rounded-2xl p-5"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          {/* Profile Info */}
+        {/* Profile Header */}
+        <motion.div className="flex flex-col lg:flex-row items-center justify-between gap-6 border border-gray-400 rounded-2xl p-5">
           <div className="flex flex-col items-center lg:flex-row gap-6">
-            {/* Profile Image */}
-            <motion.div
-              className="w-28 h-28 rounded-full overflow-hidden border border-gray-300"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-            >
-              <img
-                src={dbUser.avatar}
-                alt="User Avatar"
-                className="w-full h-full object-cover"
-              />
+            {/* Avatar */}
+            <motion.div className="w-28 h-28 rounded-full overflow-hidden border border-gray-300">
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-300 dark:bg-gray-700" />
+              )}
             </motion.div>
 
-            {/* Text Info */}
+            {/* Name & Email */}
             <div className="text-center lg:text-left">
               <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
                 {dbUser.name}
               </h2>
-              <div className="flex gap-3 flex-wrap justify-center lg:justify-start">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {dbUser.email}
-                </p>
-              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {dbUser.email}
+              </p>
             </div>
           </div>
 
           {/* Edit Button */}
           <motion.button
-            className="px-5 py-2 border border-gray-300 rounded-full bg-white text-gray-700 font-medium shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition"
+            className="px-5 py-2 border rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsEditing(!isEditing)}
@@ -133,6 +159,7 @@ const Profile = () => {
           </motion.button>
         </motion.div>
 
+        {/* Edit Form */}
         {isEditing && (
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -198,7 +225,7 @@ const Profile = () => {
             </div>
 
             {/* Submit */}
-            <div className="md:col-span-2 flex justify-end gap-3 mt-4">
+            <div className="md:col-span-2 flex justify-end mt-4">
               <button
                 type="submit"
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
@@ -210,49 +237,28 @@ const Profile = () => {
           </form>
         )}
 
-        {/* Basic Info Section */}
+        {/* Profile Info */}
         {!isEditing && (
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-5 border border-gray-400 rounded-2xl p-5 mt-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5 border border-gray-400 rounded-2xl p-5 mt-6">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Name</p>
-              <p className="font-medium text-gray-800 dark:text-white">
-                {dbUser.name}
-              </p>
+              <p className="text-sm text-gray-500">Name</p>
+              <p className="font-medium">{dbUser.name}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
-              <p className="font-medium text-gray-800 dark:text-white">
-                {dbUser.email}
-              </p>
+              <p className="text-sm text-gray-500">Email</p>
+              <p className="font-medium">{dbUser.email}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Blood Group
-              </p>
-              <p className="font-medium text-gray-800 dark:text-white">
-                {dbUser.bloodGroup}
-              </p>
+              <p className="text-sm text-gray-500">Blood Group</p>
+              <p className="font-medium">{dbUser.bloodGroup}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                District
-              </p>
-              <p className="font-medium text-gray-800 dark:text-white">
-                {dbUser.district}
-              </p>
+              <p className="text-sm text-gray-500">District</p>
+              <p className="font-medium">{dbUser.district}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Upazila
-              </p>
-              <p className="font-medium text-gray-800 dark:text-white">
-                {dbUser.upazila}
-              </p>
+              <p className="text-sm text-gray-500">Upazila</p>
+              <p className="font-medium">{dbUser.upazila}</p>
             </div>
           </motion.div>
         )}

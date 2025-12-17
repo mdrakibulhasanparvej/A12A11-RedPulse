@@ -5,11 +5,15 @@ import { FaUserCog } from "react-icons/fa";
 const BloodDonnnerMunu = () => {
   return (
     <div>
-      <MenuItem icon={FaUserCog} label="My Donation Req" address="all-users" />
+      <MenuItem
+        icon={FaUserCog}
+        label="My Donation Req"
+        address="my-donation-requests"
+      />
       <MenuItem
         icon={FaUserCog}
         label="Create Donation Req"
-        address="all-users"
+        address="create-donation-requet"
       />
       <MenuItem icon={FaUserCog} label="Profile" address="profile" />
     </div>
