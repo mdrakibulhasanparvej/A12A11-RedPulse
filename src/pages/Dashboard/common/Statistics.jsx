@@ -1,10 +1,14 @@
 import React from "react";
 import AdminStatics from "../../../components/Dashboard/Statistics/AdminStatics";
+import useUser from "../../../hooks/useUser";
+import BlodDonnerStatics from "../../../components/Dashboard/Statistics/BlodDonnerStatics";
 
 const Statistics = () => {
+  const { userData: dbUser, isLoading } = useUser();
   return (
     <div>
-      <AdminStatics />
+      {dbUser?.role === "donor" && <BlodDonnerStatics dbUser={dbUser} />}
+      {dbUser?.role === "admin" && <AdminStatics dbUser={dbUser} />}
     </div>
   );
 };

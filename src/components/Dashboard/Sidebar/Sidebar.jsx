@@ -10,8 +10,6 @@ import { BsGraphUp } from "react-icons/bs";
 
 // Custom hooks & components
 import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { useQuery } from "@tanstack/react-query";
 import MenuItem from "./Menu/MenuItem";
 import AdminMenu from "./Menu/AdminMenu";
 
@@ -116,9 +114,9 @@ const Sidebar = () => {
             />
 
             {/* Role-based Menu */}
-            {dbUser?.role === "admin" && <AdminMenu user={dbUser} />}
-            {dbUser?.role === "volunteer" && <Volunteer user={dbUser} />}
-            {dbUser?.role === "donor" && <BloodDonnnerMunu user={dbUser} />}
+            {dbUser?.role === "admin" && <AdminMenu />}
+            {dbUser?.role === "volunteer" && <Volunteer />}
+            {dbUser?.role === "donor" && <BloodDonnnerMunu />}
           </nav>
         </div>
 
