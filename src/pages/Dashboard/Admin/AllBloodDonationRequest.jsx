@@ -54,120 +54,100 @@ const AllBloodDonationRequest = ({ limit = 3 }) => {
   }
 
   return (
-    <div className="overflow-x-auto min-h-70vh max-w-[880px] mx-auto p-3 bg-white rounded-xl shadow-sm">
-      <h2 className="text-2xl font-semibold mb-6 ">
-        My Recent Donation Requests
+    <>
+      <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+        All Recent Donation Requests
       </h2>
-
-      <table className="table table-zebra table-pin-rows table-pin-cols">
-        <thead>
-          <tr>
-            <th>Recipient</th>
-            <th>Address</th>
-            <th>Hospital</th>
-            <th>Blood</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-            <th>Message</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {requests.map((request) => (
-            <tr key={request._id}>
-              <td>
-                <div className="flex items-center gap-3">
-                  {/* <div className="avatar">
-                    <div className="mask mask-squircle h-12 w-12">
-                      <img src={request.avatar} alt="avatar" />
-                    </div>
-                  </div> */}
-                  <div>
-                    <div className="font-bold">{request.recipientName}</div>
-                    {/* <div className="text-sm opacity-50">
-                      {request.requesterEmail}
-                    </div> */}
-                  </div>
-                </div>
-              </td>
-
-              <td className="text-sm">
-                <div>Div: {request.recipientDivision}</div>
-                <div>Dist: {request.recipientDistrict}</div>
-                <div>Upo: {request.recipientUpazila}</div>
-                <div>Uni: {request.recipientUnion}</div>
-              </td>
-
-              <td>{request.hospitalName}</td>
-              <td>{request.bloodGroup}</td>
-              <td>{request.donationDate}</td>
-              <td>{request.donationTime}</td>
-
-              <td>
-                <span
-                  className={`badge ${
-                    request.status === "pending"
-                      ? "badge-warning"
-                      : request.status === "inprogress"
-                        ? "badge-info"
-                        : "badge-success"
-                  }`}
-                >
-                  {request.status}
-                </span>
-              </td>
-
-              <td className="max-w-xs truncate">{request.requestMessage}</td>
-              {/* Actions */}
-              <th className=" flex flex-col items-center justify-center space-x-1 space-y-1">
-                <button
-                  className="btn w-full btn-info text-white btn-xs"
-                  // onClick={() => {
-                  //   setSelected(holder);
-                  //   setOpenView(true);
-                  // }}
-                >
-                  View
-                </button>
-
-                <button
-                  className="btn w-full btn-warning text-white btn-xs"
-                  // onClick={() => {
-                  //   setSelected(holder);
-                  //   setOpenUpdate(true);
-                  // }}
-                >
-                  Update
-                </button>
-
-                <button
-                  className="btn w-full btn-error text-white btn-xs"
-                  // onClick={() => handleDelete(holder._id)}
-                >
-                  Delete
-                </button>
-              </th>
+      <div className="overflow-x-auto min-h-70vh md:w-[880px] lg:w-[1000px] p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm transition-colors">
+        <table className="table table-zebra table-pin-rows table-pin-cols w-full text-gray-900 dark:text-gray-100">
+          <thead>
+            <tr className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+              <th>Recipient</th>
+              <th>Address</th>
+              <th>Hospital</th>
+              <th>Blood</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Message</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
+          </thead>
 
-        <tfoot>
-          <tr>
-            <th>Recipient</th>
-            <th>Address</th>
-            <th>Hospital</th>
-            <th>Blood</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-            <th>Message</th>
-            <th>Action</th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
+          <tbody>
+            {requests.map((request) => (
+              <tr
+                key={request._id}
+                className="hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              >
+                <td>
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <div className="font-bold">{request.recipientName}</div>
+                    </div>
+                  </div>
+                </td>
+
+                <td className="text-sm">
+                  <div>{request.recipientDistrict}</div>
+                  <div>{request.recipientUpazila}</div>
+                </td>
+
+                <td>{request.hospitalName}</td>
+                <td>{request.bloodGroup}</td>
+                <td>{request.donationDate}</td>
+                <td>{request.donationTime}</td>
+
+                <td>
+                  <span
+                    className={`badge ${
+                      request.status === "pending"
+                        ? "badge-warning"
+                        : request.status === "inprogress"
+                          ? "badge-info"
+                          : "badge-success"
+                    }`}
+                  >
+                    {request.status}
+                  </span>
+                </td>
+
+                <td className="max-w-xs truncate">{request.requestMessage}</td>
+
+                {/* Actions */}
+                <th className="flex flex-col items-center justify-center space-y-1">
+                  <button className="btn w-full btn-info text-white btn-xs">
+                    View
+                  </button>
+
+                  <button className="btn w-full btn-warning text-white btn-xs">
+                    Update
+                  </button>
+
+                  <button className="btn w-full btn-error text-white btn-xs">
+                    Delete
+                  </button>
+                </th>
+              </tr>
+            ))}
+          </tbody>
+
+          <tfoot>
+            <tr className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+              <th>Recipient</th>
+              <th>Address</th>
+              <th>Hospital</th>
+              <th>Blood</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Message</th>
+              <th>Action</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </>
   );
 };
 

@@ -6,12 +6,14 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useBDLocation from "../../../hooks/useBDLocation";
 import toast from "react-hot-toast";
 import Button from "../../../components/ui/Button";
+import useUser from "../../../hooks/useUser";
 
 const CreateDonationRequest = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm();
+  const { userData: dbUser, isLoading: userLoading } = useUser();
 
   const {
     divisions,
@@ -61,11 +63,33 @@ const CreateDonationRequest = () => {
       donationTime: data.donationTime,
       requestMessage: data.requestMessage,
       status: "pending",
-      created_at: new Date(), // backend timestamp
     };
 
     donationMutation.mutate(donationRequest);
   };
+
+  if (userLoading) {
+    return (
+      <div className="w-full! z-50 border border-green-600 p-6 bg-white rounded-2xl shadow text-center">
+        <p className="text-lg font-medium">Checking user status...</p>
+      </div>
+    );
+  }
+
+  if (dbUser?.status === "blocked") {
+    return (
+      <div className="w-full mx-auto p-6 bg-white rounded-2xl shadow text-center">
+        <h2 className="text-2xl font-semibold text-red-600 mb-3">
+          Access Restricted 🚫
+        </h2>
+        <p className="text-gray-600">
+          Your account is currently{" "}
+          <span className="font-semibold">blocked</span>. You are not allowed to
+          create donation requests.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow">

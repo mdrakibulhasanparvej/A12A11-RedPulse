@@ -8,10 +8,10 @@ const AdminMenu = () => {
       <MenuItem icon={FaUserCog} label="All Users" address="all-users" />
       <MenuItem
         icon={BiDonateBlood}
-        label="All B. D. Req."
+        label="All Blood Requests"
         address="all-blood-donation-request"
       />
-      <MenuItem icon={BiDonateBlood} label="Profile" address="profile" />
+      <MenuItem icon={FaUserCog} label="Profile" address="profile" />
     </>
   );
 };

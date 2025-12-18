@@ -1,10 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 /**
  * usePagination Hook
- * @param {Array} data - The full array of items to paginate
- * @param {number} itemsPerPage - Number of items per page
- * @param {number} initialPage - Starting page index
+ * Handles dynamic totalItems and page navigation
  */
 const usePagination = ({
   totalItems = 0,
@@ -12,10 +10,16 @@ const usePagination = ({
   initialPage = 0,
 }) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [totalCount, setTotalCount] = useState(totalItems);
+
+  // Update totalCount if totalItems changes dynamically
+  useEffect(() => {
+    setTotalCount(totalItems);
+  }, [totalItems]);
 
   const totalPages = useMemo(
-    () => Math.ceil(totalItems / itemsPerPage),
-    [totalItems, itemsPerPage]
+    () => Math.ceil(totalCount / itemsPerPage),
+    [totalCount, itemsPerPage]
   );
 
   const goToNextPage = () =>
@@ -36,6 +40,7 @@ const usePagination = ({
     setCurrentPage,
     skip,
     limit: itemsPerPage,
+    totalCount, // optional: for reference
   };
 };
 

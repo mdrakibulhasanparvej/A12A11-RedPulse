@@ -16,7 +16,7 @@ import AdminMenu from "./Menu/AdminMenu";
 
 // Optional fallback avatar
 import avatarImg from "../../../assets/avater.jpg";
-import Volunteer from "./Menu/Volunteer";
+import Volunteer from "./Menu/VolunteerMenu";
 import BloodDonnnerMunu from "./Menu/BloodDonnnerMunu";
 import SidebarSkeleton from "../../ui/Loading/Sidebar only/SidebarSkeleton";
 import useUser from "../../../hooks/useUser";
@@ -103,23 +103,7 @@ const Sidebar = () => {
           </div>
         </div>
 
-        {/* Middle Section - Navigation */}
-        <div className="flex-1 mt-6">
-          <nav className="space-y-2">
-            {/* Common Menu Item */}
-            <MenuItem
-              icon={BsGraphUp}
-              label="Statistics"
-              address="/dashboard"
-              users={dbUser}
-            />
-
-            {/* Role-based Menu */}
-            {dbUser?.role === "admin" && <AdminMenu />}
-            {dbUser?.role === "volunteer" && <Volunteer />}
-            {dbUser?.role === "donor" && <BloodDonnnerMunu />}
-          </nav>
-        </div>
+        
 
         {/* Bottom Section - Theme Toggle + Logout */}
         <div className="border-t border-gray-300 pt-4">
