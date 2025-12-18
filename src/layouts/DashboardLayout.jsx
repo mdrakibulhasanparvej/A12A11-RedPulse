@@ -95,7 +95,7 @@ const DashboardLayout = () => {
           {/* Logout */}
           <button
             onClick={logOut}
-            className="m-4 flex items-center justify-center gap-3 py-3 rounded-lg
+            className="cursor-pointer px-4 m-4 flex items-center  gap-3 py-3 rounded-lg
             text-gray-700 dark:text-gray-300
             hover:bg-gray-200 dark:hover:bg-gray-700 transition"
           >
@@ -140,7 +140,7 @@ const DashboardLayout = () => {
                 </div>
                 <img
                   src={user?.photoURL || avatarImg}
-                  className="w-10 h-10 rounded-full border-2 border-purple-500 object-cover"
+                  className="w-10 h-10 rounded-full border-2 border-red-800 object-cover"
                 />
               </div>
             </div>

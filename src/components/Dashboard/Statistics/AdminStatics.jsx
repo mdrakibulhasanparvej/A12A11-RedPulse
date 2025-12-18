@@ -1,166 +1,186 @@
 import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import Card from "../../ui/Card";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import toast from "react-hot-toast";
+import { Link } from "react-router";
+import Button from "../../ui/Button";
 
 const AdminStatics = () => {
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
 
-  const donorStats = [
-    { label: "Total Requests", value: 0, bg: "bg-red-50" },
-    { label: "Pending", value: 0, bg: "bg-yellow-50" },
-    { label: "In Progress", value: 0, bg: "bg-blue-50" },
-    { label: "Completed", value: 0, bg: "bg-green-50" },
-  ];
+  // Fetch Donation Requests
+  const {
+    data: donationData,
+    isLoading: donationsLoading,
+    isError: donationsError,
+  } = useQuery({
+    queryKey: ["donation-requests"],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        "/donation-request-all?skip=0&limit=1000"
+      );
+      return res.data;
+    },
+    onError: () => toast.error("Failed to fetch donation requests"),
+  });
+
+  // Fetch Users
+  const {
+    data: usersData,
+    isLoading: usersLoading,
+    isError: usersError,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/users?status=active&skip=0&limit=8");
+      return res.data;
+    },
+    onError: () => toast.error("Failed to fetch users"),
+  });
+  // console.log(donationData);
+
+  // Compute Stats
+  const donorStats = React.useMemo(() => {
+    if (!donationData)
+      return [
+        { label: "Total Requests", value: 0, bg: "bg-red-50" },
+        { label: "Pending", value: 0, bg: "bg-yellow-50" },
+        { label: "In Progress", value: 0, bg: "bg-blue-50" },
+        { label: "Completed", value: 0, bg: "bg-green-50" },
+      ];
+
+    const total = donationData.totalRequests || 0;
+    const pending = donationData.requests.filter(
+      (r) => r.status === "pending"
+    ).length;
+    const inProgress = donationData.requests.filter(
+      (r) => r.status === "in-progress"
+    ).length;
+    const completed = donationData.requests.filter(
+      (r) => r.status === "completed"
+    ).length;
+
+    const totalUser = usersData?.users?.length || 0;
+
+    return [
+      { label: "Total Requests", value: total, bg: "bg-red-50" },
+      { label: "Total Users", value: totalUser, bg: "bg-green-50" },
+      { label: "Pending", value: pending, bg: "bg-yellow-50" },
+      { label: "In Progress", value: inProgress, bg: "bg-blue-50" },
+      { label: "Completed", value: completed, bg: "bg-green-50" },
+    ];
+  }, [donationData, usersData]);
+
+  const recentDonor = React.useMemo(() => {
+    if (!donationData) return [];
+    return donationData.requests
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 3);
+  }, [donationData]);
+
+  const newUsers = React.useMemo(() => {
+    if (!usersData) return [];
+    return usersData.users
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 4);
+  }, [usersData]);
+
+  // Loading state
+  if (donationsLoading || usersLoading) {
+    return <p className="text-center text-gray-500 mt-6">Loading...</p>;
+  }
+
+  // Error state
+  if (donationsError || usersError) {
+    return <p className="text-center text-red-500 mt-6">Failed to load data</p>;
+  }
+
   return (
     <div>
+      {/* Admin Stats */}
       <Card
         title="Admin Statistics"
         userName={user?.displayName || "Admin"}
         stats={donorStats}
       />
-      {/* 3 Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {[
-          {
-            title: "Total Sales",
-            amount: "$65,024",
-            change: "+81%",
-            positive: true,
-          },
-          {
-            title: "Site Visit",
-            amount: "24,981",
-            change: "-48%",
-            positive: false,
-          },
-          {
-            title: "Search",
-            amount: "14,147",
-            change: "+21%",
-            positive: true,
-          },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">{stat.title}</p>
-                <p className="text-3xl font-bold text-white mt-2">
-                  {stat.amount}
-                </p>
-              </div>
-              <div
-                className={`w-20 h-20 rounded-full flex items-center justify-center relative ${
-                  stat.positive ? "bg-green-500/20" : "bg-red-500/20"
-                }`}
-              >
-                <svg className="w-20 h-20 transform -rotate-90">
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="34"
-                    stroke="currentColor"
-                    strokeWidth="8"
-                    fill="none"
-                    className="text-gray-700"
-                  />
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="34"
-                    stroke="currentColor"
-                    strokeWidth="8"
-                    fill="none"
-                    strokeDasharray="213"
-                    strokeDashoffset={stat.positive ? "40" : "110"}
-                    className={
-                      stat.positive
-                        ? "text-green-500"
-                        : stat.change === "-48%"
-                          ? "text-red-500"
-                          : "text-blue-500"
-                    }
-                  />
-                </svg>
-                <p
-                  className={`absolute text-sm font-bold ${stat.positive ? "text-green-400" : "text-red-400"}`}
-                >
-                  {stat.change}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+
       {/* New Users + Recent Orders */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mt-6">
+        Recent Users
+      </h2>
+      <div className="flex flex-col gap-6 mt-6">
         {/* New Users */}
-        <div className="bg-gray-800 rounded-2xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-6">New User</h2>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
+          <h2 className="text-xl font-semibold text-white mb-6">New Users</h2>
           <div className="grid grid-cols-4 gap-4">
-            {[
-              { name: "Rakibul", time: "54 Min Ago" },
-              { name: "Nayem", time: "44 Min Ago", highlight: true },
-              { name: "Rabiul", time: "24 Min Ago" },
-              { name: "More", time: "New User", add: true },
-            ].map((user, i) => (
+            {newUsers.map((userItem, i) => (
               <div key={i} className="text-center">
                 <div
-                  className={`w-16 h-16 mx-auto rounded-full overflow-hidden mb-3 relative ${
-                    user.highlight ? "ring-4 ring-green-500" : ""
-                  }`}
+                  className={`w-16 h-16 mx-auto rounded-full overflow-hidden mb-3 relative ${i === 0 ? "ring-4 ring-green-500" : ""}`}
                 >
-                  {user.add ? (
-                    <div className="w-full h-full bg-gray-700 flex items-center justify-center text-3xl text-gray-500">
-                      +
-                    </div>
-                  ) : (
-                    <img
-                      src="/api/placeholder/64/64"
-                      alt={user.name}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                  <img
+                    src="/api/placeholder/64/64"
+                    alt={userItem.name || userItem.displayName || "User"}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <p className="text-white font-medium">{user.name}</p>
-                <p className="text-xs text-gray-400">{user.time}</p>
+                <p className="text-white font-medium">
+                  {userItem.name || userItem.displayName}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {new Date(userItem.created_at).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Recent Orders */}
-        <div className="lg:col-span-2 bg-gray-800 rounded-2xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-6">
-            Recent Order
-          </h2>
+        {/*  Recent Donation Requests*/}
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mt-6">
+          Recent Donation Requests
+        </h2>
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="text-gray-400 text-sm border-b border-gray-700">
-                  <th className="pb-3">Course Name</th>
-                  <th className="pb-3">Course Number</th>
-                  <th className="pb-3">Payment</th>
+                <tr className="text-gray-800 dark:text-white text-sm border-b border-gray-700">
+                  <th className="pb-3">Recipient Name</th>
+                  <th className="pb-3">Blood Group</th>
+                  <th className="pb-3">Donation Date</th>
                   <th className="pb-3">Status</th>
-                  <th></th>
                 </tr>
               </thead>
-              <tbody className="text-gray-300">
-                <tr>
-                  <td colSpan="5" className="text-center py-8 text-gray-500">
-                    No recent orders yet
-                  </td>
-                </tr>
+              <tbody className="text-gray-800 dark:text-white ">
+                {recentDonor.length > 0 ? (
+                  recentDonor.map((order, i) => (
+                    <tr key={i} className="border-b border-gray-700">
+                      <td className="py-2">{order.recipientName}</td>
+                      <td className="py-2">{order.bloodGroup}</td>
+                      <td className="py-2">
+                        {new Date(order.donationDate).toLocaleDateString()}
+                      </td>
+                      <td className="py-2 capitalize">{order.status}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="text-center py-8 text-gray-500 dark:text-white "
+                    >
+                      No recent donations yet
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
-            <a
-              href="#"
-              className="block text-center mt-6 text-purple-400 hover:text-purple-300"
-            >
-              Show All
-            </a>
+            <Button label=" Show All" />
           </div>
         </div>
       </div>

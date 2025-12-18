@@ -42,7 +42,7 @@ const Profile = () => {
   const avatarFile = watch("avatar");
   const [preview, setPreview] = useState(dbUser?.avatar || "");
 
-  // Initialize form values when dbUser loads
+  // Initialize form values
   useEffect(() => {
     if (dbUser && isEditing) {
       reset({
@@ -57,7 +57,7 @@ const Profile = () => {
     }
   }, [dbUser, isEditing, reset]);
 
-  // Live avatar preview
+  // Avatar preview
   useEffect(() => {
     if (avatarFile && avatarFile[0]) {
       const url = URL.createObjectURL(avatarFile[0]);
@@ -69,21 +69,19 @@ const Profile = () => {
     }
   }, [avatarFile, dbUser]);
 
-  // Mutation to update profile
+  // Update profile mutation
   const updateUserMutation = useMutation({
     mutationFn: async (data) => {
       if (!firebaseUser?.email) throw new Error("User not logged in");
 
       let photoURL = dbUser?.avatar || "";
 
-      // Upload new avatar if provided
       if (data.avatar && data.avatar[0]) {
         const formData = new FormData();
         formData.append("image", data.avatar[0]);
         const imageAPIURL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_imgBB_host}`;
         const imgRes = await axios.post(imageAPIURL, formData);
         photoURL = imgRes.data.data.url;
-        console.log(photoURL);
       }
 
       const updatedData = {
@@ -96,15 +94,11 @@ const Profile = () => {
         union: selectedUnion?.name,
       };
 
-      // console.log(updatedData);
-
-      // Update backend
       await axiosSecure.patch(
         `/user-profile/${firebaseUser.email}`,
         updatedData
       );
 
-      // Update Firebase Auth profile
       if (updateUserProfile) {
         await updateUserProfile({ displayName: data.name, photoURL });
       }
@@ -129,24 +123,22 @@ const Profile = () => {
   if (isLoading) return <ProfileSkeleton />;
 
   return (
-    <div>
-      <div className="mb-6">
-        <h2 className="px-6 text-2xl font-semibold text-gray-800 dark:text-white">
-          My Profile
-        </h2>
-      </div>
+    <div className="px-6 py-6">
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
+        My Profile
+      </h2>
 
       <motion.div
-        className="p-6 rounded-2xl dark:border-gray-800 max-w-5xl mx-auto"
+        className="p-6 rounded-2xl border dark:border-gray-700 max-w-5xl mx-auto bg-white dark:bg-gray-900"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         {/* Profile Header */}
-        <motion.div className="flex flex-col lg:flex-row items-center justify-between gap-6 border border-gray-400 rounded-2xl p-5">
-          <div className="flex flex-col items-center lg:flex-row gap-6">
+        <motion.div className="flex flex-col lg:flex-row items-center justify-between gap-6 border border-gray-300 dark:border-gray-700 rounded-2xl p-5 bg-gray-50 dark:bg-gray-800">
+          <div className="flex flex-col lg:flex-row items-center gap-6">
             {/* Avatar */}
-            <motion.div className="w-28 h-28 rounded-full overflow-hidden border border-gray-300">
+            <motion.div className="w-28 h-28 rounded-full overflow-hidden border border-gray-300 dark:border-gray-600">
               {preview ? (
                 <img
                   src={preview}
@@ -161,20 +153,21 @@ const Profile = () => {
             {/* Name & Email */}
             <div className="flex flex-col items-center md:items-start text-center lg:text-left">
               <div>
-                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
                   {dbUser.name}
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {dbUser.email}
                 </p>
               </div>
-              {/* role & status */}
               <div className="flex gap-3 mt-3">
                 <span className="bg-amber-600 px-3 py-1 rounded-full text-white">
                   {dbUser.role}
                 </span>
                 <span
-                  className={`${dbUser.status === "blocked" ? "bg-red-700" : "bg-green-600"} bg-green-600 px-3 py-1 rounded-full text-white`}
+                  className={`px-3 py-1 rounded-full text-white ${
+                    dbUser.status === "blocked" ? "bg-red-700" : "bg-green-600"
+                  }`}
                 >
                   {dbUser.status}
                 </span>
@@ -183,9 +176,8 @@ const Profile = () => {
           </div>
 
           {/* Edit Button */}
-
           <motion.button
-            className="px-5 py-2 cursor-pointer border rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+            className="px-5 py-2 cursor-pointer border rounded-full bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsEditing(!isEditing)}
@@ -199,24 +191,28 @@ const Profile = () => {
           <form
             onSubmit={handleSubmit(onSubmit)}
             encType="multipart/form-data"
-            className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6 border border-gray-400 rounded-2xl p-5"
+            className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6 border border-gray-300 dark:border-gray-700 rounded-2xl p-5 bg-gray-50 dark:bg-gray-800"
           >
             {/* Avatar */}
             <div className="md:col-span-2">
-              <label className="label font-bold">Avatar</label>
+              <label className="label font-bold text-gray-700 dark:text-gray-300">
+                Avatar
+              </label>
               <input
                 type="file"
                 {...register("avatar")}
-                className="file-input w-full"
+                className="file-input w-full bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
               />
             </div>
 
             {/* Name */}
             <div>
-              <label className="label font-bold">Name</label>
+              <label className="label font-bold text-gray-700 dark:text-gray-300">
+                Name
+              </label>
               <input
                 {...register("name", { required: "Name is required" })}
-                className="input w-full"
+                className="input w-full bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
               />
               {errors.name && (
                 <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -225,10 +221,12 @@ const Profile = () => {
 
             {/* Blood Group */}
             <div>
-              <label className="label font-bold">Blood Group</label>
+              <label className="label font-bold text-gray-700 dark:text-gray-300">
+                Blood Group
+              </label>
               <select
                 {...register("bloodGroup", { required: true })}
-                className="input w-full"
+                className="input w-full bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
               >
                 <option value="">Select Blood Group</option>
                 {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
@@ -243,10 +241,12 @@ const Profile = () => {
 
             {/* Division */}
             <div>
-              <label className="label font-bold"> Division</label>
+              <label className="label font-bold text-gray-700 dark:text-gray-300">
+                Division
+              </label>
               <select
                 {...register("division", { required: true })}
-                className="select select-bordered w-full"
+                className="select select-bordered w-full bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                 value={selectedDivision?.id || ""}
                 onChange={(e) => {
                   const div = divisions.find((d) => d.id === e.target.value);
@@ -264,10 +264,12 @@ const Profile = () => {
 
             {/* District */}
             <div>
-              <label className="label font-bold">District</label>
+              <label className="label font-bold text-gray-700 dark:text-gray-300">
+                District
+              </label>
               <select
                 {...register("district", { required: true })}
-                className="select select-bordered w-full"
+                className="select select-bordered w-full bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                 disabled={!selectedDivision}
                 value={selectedDistrict?.id || ""}
                 onChange={(e) => {
@@ -288,10 +290,12 @@ const Profile = () => {
 
             {/* Upazila */}
             <div>
-              <label className="label font-bold">Upazila</label>
+              <label className="label font-bold text-gray-700 dark:text-gray-300">
+                Upazila
+              </label>
               <select
                 {...register("upazila", { required: true })}
-                className="select select-bordered w-full"
+                className="select select-bordered w-full bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                 disabled={!selectedDistrict}
                 value={selectedUpazila?.id || ""}
                 onChange={(e) => {
@@ -312,10 +316,12 @@ const Profile = () => {
 
             {/* Union */}
             <div>
-              <label className="label font-bold">Union</label>
+              <label className="label font-bold text-gray-700 dark:text-gray-300">
+                Union
+              </label>
               <select
                 {...register("union", { required: true })}
-                className="select select-bordered w-full"
+                className="select select-bordered w-full bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                 disabled={!selectedUpazila}
                 value={selectedUnion?.id || ""}
                 onChange={(e) => {
@@ -351,34 +357,56 @@ const Profile = () => {
 
         {/* Profile Info */}
         {!isEditing && (
-          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5 border border-gray-400 rounded-2xl p-5 mt-6">
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5 border border-gray-300 dark:border-gray-700 rounded-2xl p-5 bg-gray-50 dark:bg-gray-800 mt-6">
             <div>
-              <p className="text-sm text-gray-500">Name</p>
-              <p className="font-medium">{dbUser.name}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Name</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {dbUser.name}
+              </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Email</p>
-              <p className="font-medium">{dbUser.email}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {dbUser.email}
+              </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Blood Group</p>
-              <p className="font-medium">{dbUser.bloodGroup}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Blood Group
+              </p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {dbUser.bloodGroup}
+              </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Division</p>
-              <p className="font-medium">{dbUser.division}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Division
+              </p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {dbUser.division}
+              </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">District</p>
-              <p className="font-medium">{dbUser.district}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                District
+              </p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {dbUser.district}
+              </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Upazila</p>
-              <p className="font-medium">{dbUser.upazila}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Upazila
+              </p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {dbUser.upazila}
+              </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Union</p>
-              <p className="font-medium">{dbUser.union}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Union</p>
+              <p className="font-medium text-gray-900 dark:text-gray-100">
+                {dbUser.union}
+              </p>
             </div>
           </motion.div>
         )}

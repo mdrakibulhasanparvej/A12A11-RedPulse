@@ -189,7 +189,7 @@ const Navbar = () => {
             <span>
               <img
                 src={logo}
-                className="w-4 h-4  md:w-10 md:h-10 mr-6 md:mr-2"
+                className="w-7 h-7  md:w-10 md:h-10 mr-1 md:mr-2"
                 alt="rent_wheels_logo"
               />
             </span>

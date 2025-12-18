@@ -58,7 +58,7 @@ const AllBloodDonationRequest = ({ limit = 3 }) => {
       <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
         All Recent Donation Requests
       </h2>
-      <div className="overflow-x-auto min-h-70vh md:w-[880px] lg:w-[1000px] p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm transition-colors">
+      <div className="overflow-x-auto min-h-70vh w-[930px] p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm transition-colors">
         <table className="table table-zebra table-pin-rows table-pin-cols w-full text-gray-900 dark:text-gray-100">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
