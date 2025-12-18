@@ -12,9 +12,7 @@ const AllBloodDonationRequest = ({ limit = 3 }) => {
     queryKey: ["my-donation-requests", user?.email, limit],
     enabled: !!user?.email && !loading,
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/donation-requests?email=${user.email}&limit=${limit}`
-      );
+      const res = await axiosSecure.get(`/donation-request-all?limit=${limit}`);
       return res.data;
     },
     onError: () => {

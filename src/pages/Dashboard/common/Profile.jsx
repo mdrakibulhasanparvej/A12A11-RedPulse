@@ -94,7 +94,6 @@ const Profile = () => {
         district: selectedDistrict?.name,
         upazila: selectedUpazila?.name,
         union: selectedUnion?.name,
-        updated_at: new Date(),
       };
 
       // console.log(updatedData);

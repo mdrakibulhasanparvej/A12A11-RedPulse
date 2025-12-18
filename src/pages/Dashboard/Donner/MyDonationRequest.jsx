@@ -13,7 +13,7 @@ const MyDonationRequest = ({ limit = 3 }) => {
     enabled: !!user?.email && !loading,
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/donation-requests?email=${user.email}&limit=${limit}`
+        `/donation-request-all?email=${user.email}&limit=${limit}`
       );
       return res.data;
     },

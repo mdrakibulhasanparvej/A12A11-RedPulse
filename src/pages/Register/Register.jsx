@@ -77,7 +77,6 @@ const Register = () => {
         union: selectedUnion?.name,
         role: "donor",
         status: "active",
-        created_at: new Date(),
       };
 
       // Step 4: Save to Database
