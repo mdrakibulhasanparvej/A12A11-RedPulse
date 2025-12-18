@@ -9,8 +9,9 @@ import useUser from "../../../hooks/useUser";
 
 const BlodDonnerStatics = () => {
   const { user } = useAuth();
-  const {dbuser} = useUser()
+  const { userData: dbUser } = useUser();
   const axiosSecure = useAxiosSecure();
+  console.log(dbUser);
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["recent-donations", user?.email],
@@ -27,12 +28,12 @@ const BlodDonnerStatics = () => {
 
   if (isLoading) return null;
 
-  const donorStats = [
-    { label: "Total Requests", value: 0, bg: "bg-red-50" },
-    { label: "Pending", value: 0, bg: "bg-yellow-50" },
-    { label: "In Progress", value: 0, bg: "bg-blue-50" },
-    { label: "Completed", value: 0, bg: "bg-green-50" },
-  ];
+  // const donorStats = [
+  //   { label: "Total Requests", value: 0, bg: "bg-red-50" },
+  //   { label: "Pending", value: 0, bg: "bg-yellow-50" },
+  //   { label: "In Progress", value: 0, bg: "bg-blue-50" },
+  //   { label: "Completed", value: 0, bg: "bg-green-50" },
+  // ];
 
   return (
     <>
@@ -47,7 +48,9 @@ const BlodDonnerStatics = () => {
       /> */}
       {/* Recent Requests */}
       {donations.length === 0 ||
-        (dbuser.role === 'donors' && <RecentDonationRequests donations={donations} />)}
+        (dbUser?.role === "donor" && (
+          <RecentDonationRequests donations={donations} />
+        ))}
     </>
   );
 };

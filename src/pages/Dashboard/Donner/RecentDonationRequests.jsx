@@ -1,7 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
-import useAuth from "../../../hooks/useAuth";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import DonationTable from "./DonationTable";
 
 const RecentDonationRequests = ({ donations }) => {
