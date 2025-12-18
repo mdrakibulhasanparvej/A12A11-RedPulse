@@ -8,11 +8,29 @@ import { CgArrowRightO } from "react-icons/cg";
 // import Navbar from "../../components/Shared/Navbar/Navbar";
 // import Footer from "../../components/Shared/Footer/Footer";
 import toast from "react-hot-toast";
+import useBDLocation from "../../hooks/useBDLocation";
+import { useState } from "react";
 
 const Register = () => {
   const { createUser, updateUserProfile } = useAuth();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  const {
+    divisions,
+    filteredDistricts,
+    filteredUpazilas,
+    filteredUnions,
+    selectedDivision,
+    selectedDistrict,
+    selectedUpazila,
+    selectedUnion,
+    setSelectedDivision,
+    setSelectedDistrict,
+    setSelectedUpazila,
+    setSelectedUnion,
+  } = useBDLocation();
 
   const {
     register,
@@ -24,6 +42,10 @@ const Register = () => {
   const password = watch("password");
 
   const handleRegistration = async (data) => {
+    if (isRegistering) return;
+
+    setIsRegistering(true);
+
     const profileImg = data.photo[0];
 
     try {
@@ -49,8 +71,10 @@ const Register = () => {
         name: data.name,
         avatar: photoURL,
         bloodGroup: data.bloodGroup,
-        district: data.district,
-        upazila: data.upazila,
+        division: selectedDivision?.name,
+        district: selectedDistrict?.name,
+        upazila: selectedUpazila?.name,
+        union: selectedUnion?.name,
         role: "donor",
         status: "active",
         created_at: new Date(),
@@ -93,6 +117,8 @@ const Register = () => {
         }
       );
       // toast.dismiss();
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -167,17 +193,48 @@ const Register = () => {
               </select>
             </div>
 
+            {/* Division */}
+            <div>
+              <label className="label font-bold"> Division</label>
+              <select
+                {...register("division", { required: true })}
+                className="select select-bordered w-full"
+                value={selectedDivision?.id || ""}
+                onChange={(e) => {
+                  const div = divisions.find((d) => d.id === e.target.value);
+                  setSelectedDivision(div);
+                }}
+              >
+                <option value="">Select Division</option>
+                {divisions.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name} ({d.bn_name})
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* District */}
             <div>
               <label className="label font-bold">District</label>
               <select
                 {...register("district", { required: true })}
-                className="input w-full"
+                className="select select-bordered w-full"
+                disabled={!selectedDivision}
+                value={selectedDistrict?.id || ""}
+                onChange={(e) => {
+                  const dist = filteredDistricts.find(
+                    (d) => d.id === e.target.value
+                  );
+                  setSelectedDistrict(dist);
+                }}
               >
                 <option value="">Select District</option>
-                <option>Dhaka</option>
-                <option>Chattogram</option>
-                <option>Rajshahi</option>
+                {filteredDistricts.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name} ({d.bn_name})
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -186,12 +243,46 @@ const Register = () => {
               <label className="label font-bold">Upazila</label>
               <select
                 {...register("upazila", { required: true })}
-                className="input w-full"
+                className="select select-bordered w-full"
+                disabled={!selectedDistrict}
+                value={selectedUpazila?.id || ""}
+                onChange={(e) => {
+                  const upa = filteredUpazilas.find(
+                    (u) => u.id === e.target.value
+                  );
+                  setSelectedUpazila(upa);
+                }}
               >
                 <option value="">Select Upazila</option>
-                <option>Savar</option>
-                <option>Uttara</option>
-                <option>Dhanmondi</option>
+                {filteredUpazilas.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name} ({u.bn_name})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Union */}
+            <div>
+              <label className="label font-bold">Union</label>
+              <select
+                {...register("union", { required: true })}
+                className="select select-bordered w-full"
+                disabled={!selectedUpazila}
+                value={selectedUnion?.id || ""}
+                onChange={(e) => {
+                  const uni = filteredUnions.find(
+                    (u) => u.id === e.target.value
+                  );
+                  setSelectedUnion(uni);
+                }}
+              >
+                <option value="">Select Union</option>
+                {filteredUnions.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name} ({u.bn_name})
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -225,11 +316,7 @@ const Register = () => {
 
             {/* Footer */}
             <div className="md:col-span-2 flex flex-col gap-4">
-              <Button
-                type="submit"
-                label="Register"
-                iconRight={CgArrowRightO}
-              />
+              <Button type="submit" label="Register" loading={isRegistering} />
 
               <p className="text-sm">
                 Already have an Account?{" "}

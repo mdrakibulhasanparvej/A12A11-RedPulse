@@ -44,7 +44,7 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <PrivateRoute skeleton={<DashboardSkeleton />}>
+      <PrivateRoute>
         <DashboardLayout />
       </PrivateRoute>
     ),
@@ -78,3 +78,5 @@ const router = createBrowserRouter([
 ]);
 
 export default router;
+
+//  skeleton={<DashboardSkeleton />}

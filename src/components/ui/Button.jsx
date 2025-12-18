@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 const Button = ({
   label,
   onClick,
@@ -8,9 +10,11 @@ const Button = ({
   icon: Icon,
 }) => {
   return (
-    <button
+    <motion.button
       disabled={disabled}
       onClick={onClick}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
       className={`
           relative
           disabled:opacity-70
@@ -30,10 +34,10 @@ const Button = ({
           ${small ? "border" : "border-2"}
           ${
             glass
-              ? "bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 hover:scale-105 shadow-xl px-10 text-xl"
+              ? "bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30  shadow-xl px-10 text-xl"
               : outline
                 ? "bg-white border-2 border-black text-black hover:opacity-80"
-                : "bg-linear-to-r from-[#B32346] to-[#6A0B37] border-2 text-white hover:opacity-90 shadow-md hover:scale-105 px-10 text-xl"
+                : "bg-linear-to-r from-[#B32346] to-[#6A0B37] border-2 text-white hover:opacity-90 shadow-md  px-10 text-xl"
           }
         `}
     >
@@ -48,7 +52,7 @@ const Button = ({
         />
       )}
       {label}
-    </button>
+    </motion.button>
   );
 };
 

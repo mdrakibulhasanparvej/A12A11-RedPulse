@@ -3,9 +3,29 @@ import useAuth from "../../../hooks/useAuth";
 import Card from "../../ui/Card";
 import Welcome from "../../../pages/Dashboard/Donner/Welcome";
 import RecentDonationRequests from "../../../pages/Dashboard/Donner/RecentDonationRequests";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+import useUser from "../../../hooks/useUser";
 
 const BlodDonnerStatics = () => {
   const { user } = useAuth();
+  const {dbuser} = useUser()
+  const axiosSecure = useAxiosSecure();
+
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["recent-donations", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/donation-requests?email=${user.email}&limit=3`
+      );
+      return res.data;
+    },
+  });
+
+  const donations = Array.isArray(data.requests) ? data.requests : [];
+
+  if (isLoading) return null;
 
   const donorStats = [
     { label: "Total Requests", value: 0, bg: "bg-red-50" },
@@ -20,15 +40,14 @@ const BlodDonnerStatics = () => {
         {/* Welcome Section */}
         <Welcome />
       </div>
-
       {/* <Card
         title="Donor Statistics"
         userName={user?.displayName || "Donor"}
         stats={donorStats}
       /> */}
-
       {/* Recent Requests */}
-      {user && <RecentDonationRequests />}
+      {donations.length === 0 ||
+        (dbuser.role === 'donors' && <RecentDonationRequests donations={donations} />)}
     </>
   );
 };

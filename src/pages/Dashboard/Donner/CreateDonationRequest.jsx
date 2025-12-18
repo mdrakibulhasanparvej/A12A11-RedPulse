@@ -1,8 +1,10 @@
+import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useBDLocation from "../../../hooks/useBDLocation";
 import toast from "react-hot-toast";
+import Button from "../../../components/ui/Button";
 
 const CreateDonationRequest = () => {
   const { user } = useAuth();
@@ -40,7 +42,7 @@ const CreateDonationRequest = () => {
       donationTime: data.donationTime,
       requestMessage: data.requestMessage,
       status: "pending",
-      createdAt: new Date(),
+      created_at: new Date(),
     };
 
     try {
@@ -250,9 +252,7 @@ const CreateDonationRequest = () => {
 
         {/* Submit Button */}
         <div className="md:col-span-2">
-          <button type="submit" className="btn btn-primary w-full">
-            Request Blood Donation
-          </button>
+          <Button type="submit" label="Request Blood Donation" />
         </div>
       </form>
     </div>

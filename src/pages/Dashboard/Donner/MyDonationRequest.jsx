@@ -82,7 +82,7 @@ const MyDonationRequest = ({ limit = 3 }) => {
               <td>
                 <div className="flex items-center gap-3">
                   <div className="avatar">
-                    <div className="mask mask-squircle h-12 w-12">
+                    {/* <div className="mask mask-squircle h-12 w-12">
                       <img
                         src={
                           request.avatar ||
@@ -90,13 +90,13 @@ const MyDonationRequest = ({ limit = 3 }) => {
                         }
                         alt="avatar"
                       />
-                    </div>
+                    </div> */}
                   </div>
                   <div>
                     <div className="font-bold">{request.recipientName}</div>
-                    <div className="text-sm opacity-50">
+                    {/* <div className="text-sm opacity-50">
                       {request.requesterEmail}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </td>

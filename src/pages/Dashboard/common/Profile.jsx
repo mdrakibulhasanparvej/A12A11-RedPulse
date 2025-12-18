@@ -7,6 +7,8 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import axios from "axios";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
+import ProfileSkeleton from "../../../components/ui/Loading/Profile/ProfileSkeleton";
+import useBDLocation from "../../../hooks/useBDLocation";
 
 const Profile = () => {
   const { userData: dbUser, isLoading, refetch } = useUser();
@@ -22,6 +24,21 @@ const Profile = () => {
     formState: { errors },
   } = useForm();
 
+  const {
+    divisions,
+    filteredDistricts,
+    filteredUpazilas,
+    filteredUnions,
+    selectedDivision,
+    selectedDistrict,
+    selectedUpazila,
+    selectedUnion,
+    setSelectedDivision,
+    setSelectedDistrict,
+    setSelectedUpazila,
+    setSelectedUnion,
+  } = useBDLocation();
+
   const avatarFile = watch("avatar");
   const [preview, setPreview] = useState(dbUser?.avatar || "");
 
@@ -34,6 +51,8 @@ const Profile = () => {
         bloodGroup: dbUser.bloodGroup || "",
         district: dbUser.district || "",
         upazila: dbUser.upazila || "",
+        division: dbUser.division,
+        union: dbUser.union,
       });
     }
   }, [dbUser, isEditing, reset]);
@@ -71,8 +90,11 @@ const Profile = () => {
         name: data.name,
         avatar: photoURL,
         bloodGroup: data.bloodGroup,
-        district: data.district,
-        upazila: data.upazila,
+        division: selectedDivision?.name,
+        district: selectedDistrict?.name,
+        upazila: selectedUpazila?.name,
+        union: selectedUnion?.name,
+        updated_at: new Date(),
       };
 
       // console.log(updatedData);
@@ -105,7 +127,7 @@ const Profile = () => {
     updateUserMutation.mutate(data);
   };
 
-  if (isLoading) return <div className="p-6">Loading profile...</div>;
+  if (isLoading) return <ProfileSkeleton />;
 
   return (
     <div>
@@ -138,19 +160,31 @@ const Profile = () => {
             </motion.div>
 
             {/* Name & Email */}
-            <div className="text-center lg:text-left">
-              <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-                {dbUser.name}
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {dbUser.email}
-              </p>
+            <div className="flex flex-col items-center md:items-start text-center lg:text-left">
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+                  {dbUser.name}
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {dbUser.email}
+                </p>
+              </div>
+              {/* role & status */}
+              <div className="flex gap-3 mt-3">
+                <span className="bg-amber-600 px-3 py-1 rounded-full text-white">
+                  {dbUser.role}
+                </span>
+                <span className="bg-green-600 px-3 py-1 rounded-full text-white">
+                  {dbUser.status}
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Edit Button */}
+
           <motion.button
-            className="px-5 py-2 border rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+            className="px-5 py-2 cursor-pointer border rounded-full bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsEditing(!isEditing)}
@@ -206,33 +240,110 @@ const Profile = () => {
               </select>
             </div>
 
+            {/* Division */}
+            <div>
+              <label className="label font-bold"> Division</label>
+              <select
+                {...register("division", { required: true })}
+                className="select select-bordered w-full"
+                value={selectedDivision?.id || ""}
+                onChange={(e) => {
+                  const div = divisions.find((d) => d.id === e.target.value);
+                  setSelectedDivision(div);
+                }}
+              >
+                <option value="">Select Division</option>
+                {divisions.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name} ({d.bn_name})
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* District */}
             <div>
               <label className="label font-bold">District</label>
-              <input
+              <select
                 {...register("district", { required: true })}
-                className="input w-full"
-              />
+                className="select select-bordered w-full"
+                disabled={!selectedDivision}
+                value={selectedDistrict?.id || ""}
+                onChange={(e) => {
+                  const dist = filteredDistricts.find(
+                    (d) => d.id === e.target.value
+                  );
+                  setSelectedDistrict(dist);
+                }}
+              >
+                <option value="">Select District</option>
+                {filteredDistricts.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name} ({d.bn_name})
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Upazila */}
             <div>
               <label className="label font-bold">Upazila</label>
-              <input
+              <select
                 {...register("upazila", { required: true })}
-                className="input w-full"
-              />
+                className="select select-bordered w-full"
+                disabled={!selectedDistrict}
+                value={selectedUpazila?.id || ""}
+                onChange={(e) => {
+                  const upa = filteredUpazilas.find(
+                    (u) => u.id === e.target.value
+                  );
+                  setSelectedUpazila(upa);
+                }}
+              >
+                <option value="">Select Upazila</option>
+                {filteredUpazilas.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name} ({u.bn_name})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Union */}
+            <div>
+              <label className="label font-bold">Union</label>
+              <select
+                {...register("union", { required: true })}
+                className="select select-bordered w-full"
+                disabled={!selectedUpazila}
+                value={selectedUnion?.id || ""}
+                onChange={(e) => {
+                  const uni = filteredUnions.find(
+                    (u) => u.id === e.target.value
+                  );
+                  setSelectedUnion(uni);
+                }}
+              >
+                <option value="">Select Union</option>
+                {filteredUnions.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name} ({u.bn_name})
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Submit */}
             <div className="md:col-span-2 flex justify-end mt-4">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                 disabled={updateUserMutation.isLoading}
               >
                 {updateUserMutation.isLoading ? "Saving..." : "Save Changes"}
-              </button>
+              </motion.button>
             </div>
           </form>
         )}
@@ -253,12 +364,20 @@ const Profile = () => {
               <p className="font-medium">{dbUser.bloodGroup}</p>
             </div>
             <div>
+              <p className="text-sm text-gray-500">Division</p>
+              <p className="font-medium">{dbUser.division}</p>
+            </div>
+            <div>
               <p className="text-sm text-gray-500">District</p>
               <p className="font-medium">{dbUser.district}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Upazila</p>
               <p className="font-medium">{dbUser.upazila}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Union</p>
+              <p className="font-medium">{dbUser.union}</p>
             </div>
           </motion.div>
         )}
