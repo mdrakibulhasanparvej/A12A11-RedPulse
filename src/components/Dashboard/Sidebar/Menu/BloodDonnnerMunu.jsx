@@ -13,7 +13,7 @@ const BloodDonnnerMunu = () => {
       <MenuItem
         icon={FaUserCog}
         label="Create Donation Req"
-        address="create-donation-requet"
+        address="create-donation-request"
       />
       <MenuItem icon={FaUserCog} label="Profile" address="profile" />
     </div>

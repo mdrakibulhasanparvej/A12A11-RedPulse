@@ -4,20 +4,22 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import AllusersTableRow from "../../../components/ui/Loading/ManageUsers/AllusersTableRow";
 import Swal from "sweetalert2";
 import { FaFilter } from "react-icons/fa";
+import usePagination from "../../../hooks/usePagination";
 
 const Allusers = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
-  const [currentPage, setCurrentPage] = useState(0);
   const [statusFilter, setStatusFilter] = useState("");
+
   const limit = 10;
 
   // ==================== Fetch Users ====================
   const { data, isLoading, error } = useQuery({
-    queryKey: ["users", currentPage, statusFilter, limit],
-    queryFn: async () => {
+    queryKey: ["users", statusFilter],
+    queryFn: async ({ queryKey }) => {
+      const [_key] = queryKey;
       let url = `/users?limit=${limit}&skip=${currentPage * limit}`;
-      if (statusFilter) url += `&status=${statusFilter}`; // server-side filter
+      if (statusFilter) url += `&status=${statusFilter}`;
       const res = await axiosSecure.get(url);
       return res.data;
     },
@@ -26,16 +28,25 @@ const Allusers = () => {
 
   const users = data?.users || [];
   const totalUsers = data?.totalUsers || 0;
-  const totalPage = Math.ceil(totalUsers / limit);
+
+  // ==================== Use Pagination Hook ====================
+  const {
+    currentPage,
+    totalPages,
+    goToNextPage,
+    goToPrevPage,
+    goToPage,
+    setCurrentPage,
+  } = usePagination({
+    totalItems: totalUsers,
+    itemsPerPage: limit,
+  });
 
   // ==================== Mutation for Role/Status ====================
   const mutation = useMutation({
-    mutationFn: async ({ userId, updates }) => {
-      return axiosSecure.patch(`/users/${userId}`, updates);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
+    mutationFn: async ({ userId, updates }) =>
+      axiosSecure.patch(`/users/${userId}`, updates),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
   });
 
   // ==================== Handle Update ====================
@@ -76,6 +87,7 @@ const Allusers = () => {
 
   return (
     <div className="overflow-x-auto min-h-70vh max-w-[880px]">
+      {/* Table */}
       <table className="table-zebra table table-md table-pin-rows table-pin-cols">
         <thead className="bg-base-200 dark:bg-gray-800">
           <tr>
@@ -97,7 +109,6 @@ const Allusers = () => {
                     </span>
                   )}
                 </label>
-
                 <ul
                   tabIndex={0}
                   className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32"
@@ -148,7 +159,6 @@ const Allusers = () => {
                 </ul>
               </div>
             </th>
-
             <th>Role</th>
             <th>Action</th>
           </tr>
@@ -160,7 +170,6 @@ const Allusers = () => {
             : users.map((user, index) => (
                 <tr key={user._id} className="hover">
                   <td>{currentPage * limit + index + 1}</td>
-
                   <td>
                     <div className="flex items-center gap-3">
                       <div className="avatar">
@@ -187,11 +196,7 @@ const Allusers = () => {
 
                   <td>
                     <span
-                      className={`badge ${
-                        user.status === "active"
-                          ? "badge-success text-white"
-                          : "badge-error text-white"
-                      }`}
+                      className={`badge ${user.status === "active" ? "badge-success text-white" : "badge-error text-white"}`}
                     >
                       {user.status}
                     </span>
@@ -200,7 +205,6 @@ const Allusers = () => {
                   <td>{user.role}</td>
 
                   <th className="flex flex-col items-center space-y-1">
-                    {/* Role Updates */}
                     {user.role === "donor" && (
                       <button
                         className="btn h-full w-full btn-info text-white btn-xs"
@@ -210,10 +214,12 @@ const Allusers = () => {
                             updated_at: new Date(),
                           })
                         }
+                        disabled={user.status === "blocked"}
                       >
                         Make Admin
                       </button>
                     )}
+
                     {user.role === "admin" && (
                       <button
                         className="btn h-full w-full btn-warning text-white btn-xs"
@@ -223,10 +229,12 @@ const Allusers = () => {
                             updated_at: new Date(),
                           })
                         }
+                        disabled={user.status === "blocked"}
                       >
                         Make Volunteer
                       </button>
                     )}
+
                     {user.role === "volunteer" && (
                       <button
                         className="btn h-full w-full btn-info text-white btn-xs"
@@ -236,12 +244,12 @@ const Allusers = () => {
                             updated_at: new Date(),
                           })
                         }
+                        disabled={user.status === "blocked"}
                       >
                         Make Admin
                       </button>
                     )}
 
-                    {/* Status Updates */}
                     {user.status === "active" ? (
                       <button
                         className="btn h-full w-full btn-error text-white btn-xs"
@@ -273,26 +281,26 @@ const Allusers = () => {
         </tbody>
       </table>
 
-      {/* Pagination */}
+      {/* ===== Pagination using Hook ===== */}
       <div className="flex justify-center flex-wrap gap-3 py-10">
         {currentPage > 0 && (
-          <button onClick={() => setCurrentPage((p) => p - 1)} className="btn">
+          <button onClick={goToPrevPage} className="btn">
             Prev
           </button>
         )}
 
-        {[...Array(totalPage).keys()].map((i) => (
+        {[...Array(totalPages).keys()].map((i) => (
           <button
             key={i}
-            onClick={() => setCurrentPage(i)}
+            onClick={() => goToPage(i)}
             className={`btn ${i === currentPage ? "btn-active" : ""}`}
           >
             {i + 1}
           </button>
         ))}
 
-        {currentPage < totalPage - 1 && (
-          <button onClick={() => setCurrentPage((p) => p + 1)} className="btn">
+        {currentPage < totalPages - 1 && (
+          <button onClick={goToNextPage} className="btn">
             Next
           </button>
         )}

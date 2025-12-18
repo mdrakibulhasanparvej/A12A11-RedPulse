@@ -70,7 +70,7 @@ const router = createBrowserRouter([
         Component: MyDonationRequest,
       },
       {
-        path: "create-donation-requet",
+        path: "create-donation-request",
         Component: CreateDonationRequest,
       },
     ],

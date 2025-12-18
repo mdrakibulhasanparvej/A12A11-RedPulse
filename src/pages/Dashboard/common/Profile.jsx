@@ -173,7 +173,9 @@ const Profile = () => {
                 <span className="bg-amber-600 px-3 py-1 rounded-full text-white">
                   {dbUser.role}
                 </span>
-                <span className="bg-green-600 px-3 py-1 rounded-full text-white">
+                <span
+                  className={`${dbUser.status === "blocked" ? "bg-red-700" : "bg-green-600"} bg-green-600 px-3 py-1 rounded-full text-white`}
+                >
                   {dbUser.status}
                 </span>
               </div>

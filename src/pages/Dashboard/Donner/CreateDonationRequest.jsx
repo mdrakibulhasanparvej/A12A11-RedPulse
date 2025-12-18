@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
+import React from "react";
 import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useBDLocation from "../../../hooks/useBDLocation";
@@ -9,6 +10,7 @@ import Button from "../../../components/ui/Button";
 const CreateDonationRequest = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm();
 
   const {
@@ -26,7 +28,24 @@ const CreateDonationRequest = () => {
     setSelectedUnion,
   } = useBDLocation();
 
-  const onSubmit = async (data) => {
+  // Mutation using React Query v5
+  const donationMutation = useMutation({
+    mutationFn: async (donationRequest) => {
+      const res = await axiosSecure.post("/donation-requests", donationRequest);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Donation request created successfully");
+      reset();
+      queryClient.invalidateQueries({ queryKey: ["my-donation-requests"] });
+    },
+    onError: (error) => {
+      toast.error("Failed to create donation request");
+      console.error(error);
+    },
+  });
+
+  const onSubmit = (data) => {
     const donationRequest = {
       requesterName: user?.displayName,
       requesterEmail: user?.email,
@@ -42,15 +61,10 @@ const CreateDonationRequest = () => {
       donationTime: data.donationTime,
       requestMessage: data.requestMessage,
       status: "pending",
+      created_at: new Date(), // backend timestamp
     };
 
-    try {
-      await axiosSecure.post("/donation-requests", donationRequest);
-      toast.success("Donation request created successfully");
-      reset();
-    } catch (error) {
-      toast.error("Failed to create donation request", error);
-    }
+    donationMutation.mutate(donationRequest);
   };
 
   return (
@@ -251,7 +265,15 @@ const CreateDonationRequest = () => {
 
         {/* Submit Button */}
         <div className="md:col-span-2">
-          <Button type="submit" label="Request Blood Donation" />
+          <Button
+            type="submit"
+            label={
+              donationMutation.isLoading
+                ? "Submitting..."
+                : "Request Blood Donation"
+            }
+            disabled={donationMutation.isLoading}
+          />
         </div>
       </form>
     </div>

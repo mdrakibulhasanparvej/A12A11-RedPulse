@@ -11,20 +11,21 @@ const BlodDonnerStatics = () => {
   const { user } = useAuth();
   const { userData: dbUser } = useUser();
   const axiosSecure = useAxiosSecure();
-  console.log(dbUser);
+  // console.log(dbUser);
 
   const { data = [], isLoading } = useQuery({
     queryKey: ["recent-donations", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/donation-requests?email=${user.email}&limit=3`
+        `/donation-request-all?email=${user.email}&limit=3`
       );
       return res.data;
     },
   });
 
   const donations = Array.isArray(data.requests) ? data.requests : [];
+  console.log(donations);
 
   if (isLoading) return null;
 

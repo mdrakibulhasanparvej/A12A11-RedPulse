@@ -4,7 +4,7 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { toast } from "react-toastify";
 
-const MyDonationRequest = ({ limit = 3 }) => {
+const MyDonationRequest = ({ limit = 10 }) => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
@@ -22,7 +22,7 @@ const MyDonationRequest = ({ limit = 3 }) => {
     },
   });
 
-  console.log(data);
+  // console.log(data);
   // Ensure requests is always an array
   const requests = Array.isArray(data?.requests) ? data.requests : [];
 
@@ -56,100 +56,89 @@ const MyDonationRequest = ({ limit = 3 }) => {
   }
 
   return (
-    <div className="overflow-x-auto max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow">
+    <>
       <h2 className="text-2xl font-semibold mb-6">
         My Recent Donation Requests
       </h2>
-
-      <table className="table table-zebra">
-        <thead>
-          <tr>
-            <th>Recipient</th>
-            <th>Address</th>
-            <th>Hospital</th>
-            <th>Blood</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-            <th>Message</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {requests.map((request) => (
-            <tr key={request._id}>
-              <td>
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    {/* <div className="mask mask-squircle h-12 w-12">
-                      <img
-                        src={
-                          request.avatar ||
-                          "https://img.daisyui.com/images/profile/demo/2@94.webp"
-                        }
-                        alt="avatar"
-                      />
-                    </div> */}
-                  </div>
-                  <div>
-                    <div className="font-bold">{request.recipientName}</div>
-                    {/* <div className="text-sm opacity-50">
-                      {request.requesterEmail}
-                    </div> */}
-                  </div>
-                </div>
-              </td>
-
-              <td className="text-sm">
-                <div>Div: {request.recipientDivision}</div>
-                <div>Dist: {request.recipientDistrict}</div>
-                <div>Upo: {request.recipientUpazila}</div>
-                <div>Uni: {request.recipientUnion}</div>
-              </td>
-
-              <td>{request.hospitalName}</td>
-              <td>{request.bloodGroup}</td>
-              <td>{request.donationDate}</td>
-              <td>{request.donationTime}</td>
-
-              <td>
-                <span
-                  className={`badge ${
-                    request.status === "pending"
-                      ? "badge-warning"
-                      : request.status === "inprogress"
-                        ? "badge-info"
-                        : "badge-success"
-                  }`}
-                >
-                  {request.status}
-                </span>
-              </td>
-
-              <td className="max-w-xs truncate">{request.requestMessage}</td>
-              <td>
-                <button className="btn btn-ghost btn-xs">Details</button>
-              </td>
+      <div className="overflow-x-auto min-h-70vh md:w-[880px] lg:w-[1000px] p-6 bg-white rounded-2xl shadow">
+        <table className="table table-xs table-pin-rows table-pin-cols table-zebra">
+          <thead>
+            <tr>
+              <th>Recipient</th>
+              <th>Address</th>
+              <th>Hospital</th>
+              <th>Blood</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Message</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
+          </thead>
 
-        <tfoot>
-          <tr>
-            <th>Recipient</th>
-            <th>Address</th>
-            <th>Hospital</th>
-            <th>Blood</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-            <th>Message</th>
-            <th>Action</th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
+          <tbody>
+            {requests.map((request) => (
+              <tr key={request._id}>
+                <td className="whitespace-nowrap text-sm text-gray-700 font-bold space-x-2">
+                  {request.recipientName}
+                </td>
+
+                <td className="whitespace-nowrap space-x-2 text-xs">
+                  <div> {request.recipientDistrict}</div>
+                  <div> {request.recipientUpazila}</div>
+                </td>
+
+                <td className="whitespace-nowrap space-x-2 text-sm">
+                  {request.hospitalName}
+                </td>
+                <td className="whitespace-nowrap space-x-2 text-sm">
+                  {request.bloodGroup}
+                </td>
+                <td className="whitespace-nowrap space-x-2 text-sm">
+                  {request.donationDate}
+                </td>
+                <td className="whitespace-nowrap space-x-2 text-sm">
+                  {request.donationTime}
+                </td>
+
+                <td className="whitespace-nowrap space-x-2 text-sm">
+                  <span
+                    className={`badge ${
+                      request.status === "pending"
+                        ? "badge-warning"
+                        : request.status === "inprogress"
+                          ? "badge-info"
+                          : "badge-success"
+                    }`}
+                  >
+                    {request.status}
+                  </span>
+                </td>
+
+                <td className="max-w-xs truncate">{request.requestMessage}</td>
+                <th className="whitespace-nowrap space-x-2 text-sm">
+                  <button className="btn btn-ghost btn-xs">Details</button>
+                </th>
+              </tr>
+            ))}
+          </tbody>
+
+          {/* <tfoot>
+            <tr>
+              <th>Recipient</th>
+              <th>Address</th>
+              <th>Hospital</th>
+              <th>Blood</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Message</th>
+              <th>Action</th>
+            </tr>
+          </tfoot> */}
+        </table>
+      </div>
+    </>
   );
 };
 
