@@ -14,6 +14,8 @@ import Profile from "../pages/Dashboard/common/Profile";
 import MyDonationRequest from "../pages/Dashboard/Donner/MyDonationRequest";
 import CreateDonationRequest from "../pages/Dashboard/Donner/CreateDonationRequest";
 import AdminRoute from "./AdminRoute";
+import AllDonationRequest from "../pages/PublicPage/AllDonationRequest";
+import DonationRequestDetails from "../pages/Dashboard/Donner/DonationRequestDetails";
 
 // lazy loaded pages
 const Allusers = lazy(() => import("../pages/Dashboard/Admin/Allusers"));
@@ -31,6 +33,18 @@ const router = createBrowserRouter([
       {
         path: "/",
         Component: Home,
+      },
+      {
+        path: "donation-request",
+        Component: AllDonationRequest,
+      },
+      {
+        path: "/donation-request/:id",
+        element: (
+          <PrivateRoute>
+            <DonationRequestDetails />
+          </PrivateRoute>
+        ),
       },
     ],
   },

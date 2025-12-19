@@ -47,6 +47,15 @@ const CreateDonationRequest = () => {
   });
 
   const onSubmit = (data) => {
+    if (
+      !selectedDivision ||
+      !selectedDistrict ||
+      !selectedUpazila ||
+      !selectedUnion
+    ) {
+      toast.error("Please select Division, District, Upazila & Union");
+      return;
+    }
     const donationRequest = {
       requesterName: user?.displayName,
       requesterEmail: user?.email,
@@ -339,7 +348,13 @@ const CreateDonationRequest = () => {
                   ? "Submitting..."
                   : "Request Blood Donation"
               }
-              disabled={donationMutation.isLoading}
+              disabled={
+                donationMutation.isLoading ||
+                !selectedDivision ||
+                !selectedDistrict ||
+                !selectedUpazila ||
+                !selectedUnion
+              }
             />
           </div>
         </form>

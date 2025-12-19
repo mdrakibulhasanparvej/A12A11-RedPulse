@@ -61,7 +61,7 @@ const Navbar = () => {
         <MyLinks to="/aboutus">About Us</MyLinks>
       </li>
       <li>
-        <MyLinks to="/contactus">Find Blood</MyLinks>
+        <MyLinks to="/donation-request">Donation Request</MyLinks>
       </li>
     </>
   );
