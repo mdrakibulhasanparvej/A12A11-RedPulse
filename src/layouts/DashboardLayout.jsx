@@ -57,12 +57,11 @@ const DashboardLayout = () => {
           className={`fixed lg:static inset-y-0 left-0 z-50 w-64
           transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0 transition-transform duration-300
-          bg-white dark:bg-gray-800
-           border-gray-200 dark:border-gray-700
-          flex flex-col`}
+          bg-white dark:bg-gray-800 
+          flex flex-col m-4 rounded-xl`}
         >
           {/* Logo */}
-          <div className="p-4 flex items-center justify-between border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
               <div className="w-10 h-10 flex items-center justify-center text-white font-bold">
                 <img src={logo} className="" alt="rent_wheels_logo" />
@@ -93,7 +92,8 @@ const DashboardLayout = () => {
           </div>
 
           {/* Logout */}
-          <button
+          <Link
+            to="/"
             onClick={logOut}
             className="cursor-pointer px-4 m-4 flex items-center  gap-3 py-3 rounded-lg
             text-gray-700 dark:text-gray-300
@@ -101,16 +101,16 @@ const DashboardLayout = () => {
           >
             <GrLogout />
             Logout
-          </button>
+          </Link>
         </aside>
 
         {/* MAIN */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="mb-4 mr-4 flex-1 flex flex-col overflow-hidden">
           {/* TOP NAV */}
           <header
-            className="flex items-center justify-between px-6 py-4
-          bg-white dark:bg-gray-900
-           border-gray-200 dark:border-gray-700"
+            className="mt-4 flex items-center justify-between px-6 py-4
+          bg-white dark:bg-gray-800 rounded-xl
+           border-b border-gray-200 dark:border-gray-700 "
           >
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden">
               <MdMenu className="w-7 h-7 text-gray-700 dark:text-gray-300" />
@@ -155,7 +155,7 @@ const DashboardLayout = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.25 }}
-                className="h-full overflow-y-auto p-6
+                className="h-full overflow-y-auto mt-4
                 bg-gray-100 dark:bg-gray-900
                 text-gray-900 dark:text-gray-100"
               >

@@ -7,12 +7,13 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Statistics from "../pages/Dashboard/common/Statistics";
-import ErrorPage from "../pages/ErrorPage";
+import ErrorPage from "../pages/ErrorPages/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
 import DashboardSkeleton from "../components/ui/Loading/Dashborad/DashboardSkeleton";
 import Profile from "../pages/Dashboard/common/Profile";
 import MyDonationRequest from "../pages/Dashboard/Donner/MyDonationRequest";
 import CreateDonationRequest from "../pages/Dashboard/Donner/CreateDonationRequest";
+import AdminRoute from "./AdminRoute";
 
 // lazy loaded pages
 const Allusers = lazy(() => import("../pages/Dashboard/Admin/Allusers"));
@@ -55,7 +56,11 @@ const router = createBrowserRouter([
       },
       {
         path: "all-users",
-        element: <Allusers />,
+        element: (
+          <AdminRoute>
+            <Allusers />
+          </AdminRoute>
+        ),
       },
       {
         path: "all-blood-donation-request",

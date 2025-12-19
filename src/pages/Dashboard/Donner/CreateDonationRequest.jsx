@@ -7,6 +7,7 @@ import useBDLocation from "../../../hooks/useBDLocation";
 import toast from "react-hot-toast";
 import Button from "../../../components/ui/Button";
 import useUser from "../../../hooks/useUser";
+import AccessRestricted from "../../ErrorPages/AccessRestricted";
 
 const CreateDonationRequest = () => {
   const { user } = useAuth();
@@ -81,22 +82,7 @@ const CreateDonationRequest = () => {
 
   /* ================= BLOCKED ================= */
   if (dbUser?.status === "blocked") {
-    return (
-      <div
-        className="w-full mx-auto p-6 rounded-2xl shadow text-center
-      bg-white dark:bg-gray-800
-      text-gray-900 dark:text-gray-100"
-      >
-        <h2 className="text-2xl font-semibold text-red-600 dark:text-red-400 mb-3">
-          Access Restricted 🚫
-        </h2>
-        <p className="text-gray-700 dark:text-gray-300">
-          Your account is currently{" "}
-          <span className="font-semibold">blocked</span>. You are not allowed to
-          create donation requests.
-        </p>
-      </div>
-    );
+    return <AccessRestricted />;
   }
 
   /* ================= FORM ================= */
