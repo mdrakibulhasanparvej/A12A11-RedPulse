@@ -82,7 +82,12 @@ const Login = () => {
           </div>
 
           {/* Submit */}
-          <Button type="submit" label="Login" iconRight={CgArrowRightO} />
+          <Button
+            size={true}
+            type="submit"
+            label="Login"
+            iconRight={CgArrowRightO}
+          />
         </form>
 
         {/* Footer */}

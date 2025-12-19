@@ -342,6 +342,7 @@ const CreateDonationRequest = () => {
           {/* Submit */}
           <div className="md:col-span-2">
             <Button
+              size={true}
               type="submit"
               label={
                 donationMutation.isLoading

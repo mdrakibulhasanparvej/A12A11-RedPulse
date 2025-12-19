@@ -13,7 +13,7 @@ import {
   IoLogoWhatsapp,
 } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
-import { FaListAlt } from "react-icons/fa";
+import { FaListAlt, FaSearch } from "react-icons/fa";
 import { MdDarkMode, MdLightMode, MdSpaceDashboard } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import MyLinks from "./MyLinks";
@@ -57,11 +57,14 @@ const Navbar = () => {
       <li>
         <MyLinks to="/">Home</MyLinks>
       </li>
-      <li>
+      {/* <li>
         <MyLinks to="/aboutus">About Us</MyLinks>
-      </li>
+      </li> */}
       <li>
         <MyLinks to="/donation-request">Donation Request</MyLinks>
+      </li>
+      <li>
+        <MyLinks to="/funding">Funding</MyLinks>
       </li>
     </>
   );
@@ -205,6 +208,9 @@ const Navbar = () => {
 
         {/* new user icon */}
         <div className="navbar-end gap-3">
+          <Link to="/search">
+            <FaSearch />
+          </Link>
           {user ? (
             <div className="dropdown dropdown-end z-50 ">
               <div
@@ -212,7 +218,7 @@ const Navbar = () => {
                 role="button"
                 className="btn btn-ghost btn-circle avatar"
               >
-                <div className="w-9 border-2 border-gray-300 rounded-full">
+                <div className="w-9 border-2 border-red-800 rounded-full">
                   <img
                     alt="Tailwind CSS Navbar component"
                     referrerPolicy="no-referrer"

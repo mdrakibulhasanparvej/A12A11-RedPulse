@@ -86,7 +86,7 @@ const Allusers = () => {
   };
 
   return (
-    <div className="overflow-x-auto min-h-70vh md:w-[880px] lg:w-[1000px]">
+    <div className="overflow-x-auto min-h-70vh md:w-[880px] lg:w-[950px]">
       {/* Table */}
       <table className="table-zebra table table-md table-pin-rows table-pin-cols">
         <thead className="bg-base-200 dark:bg-gray-800">

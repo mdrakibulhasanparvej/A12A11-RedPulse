@@ -78,9 +78,14 @@ const AllDonationRequest = () => {
               key={req._id}
               className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm"
             >
-              <p>
-                <b>Recipient:</b> {req.recipientName}
-              </p>
+              <div className="flex justify-between">
+                <p>
+                  <b>Recipient:</b> {req.recipientName}
+                </p>
+                <p className="bg-linear-to-r from-[#6A0B37]/90 to-[#B32346]/90 text-white px-3 text-sm py-1 rounded-xl">
+                  {req.status}
+                </p>
+              </div>
               <div className="grid grid-cols-2">
                 <p>
                   <b>Blood Group:</b> {req.bloodGroup}
@@ -123,7 +128,7 @@ const AllDonationRequest = () => {
                 onClick={() => goToPage(page)}
                 className={
                   page === currentPage
-                    ? "font-bold btn bg-red-700 text-white"
+                    ? "font-bold btn bg-linear-to-r from-[#6A0B37]/90 to-[#B32346]/90 text-white"
                     : "btn"
                 }
               >

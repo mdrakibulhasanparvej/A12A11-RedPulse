@@ -2,6 +2,7 @@ import React from "react";
 import Container from "../ui/Container";
 import { CgArrowRight, CgArrowRightO } from "react-icons/cg";
 import Button from "../ui/Button";
+import { Link } from "react-router";
 
 const Banner = () => {
   return (
@@ -40,13 +41,13 @@ const Banner = () => {
               Be the reason someone gets another tomorrow.
             </p>
 
-            <div className="pt-6">
-              <Button
-                label="Get Blood Now"
-                glass={true} // This triggers the beautiful glass style
-                iconRight={CgArrowRightO}
-                onClick={() => alert("Donate now!")}
-              />
+            <div className="pt-6 flex gap-5">
+              <Link to="/register" className="btn dark:outline">
+                Join as a donor
+              </Link>
+              <Link to="/search" className="btn dark:outline">
+                Search Donors
+              </Link>
             </div>
           </div>
         </div>

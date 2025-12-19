@@ -8,12 +8,13 @@ const Button = ({
   outline,
   small,
   icon: Icon,
+  size,
 }) => {
   return (
     <motion.button
       disabled={disabled}
       onClick={onClick}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.95 }}
       className={`
           relative
@@ -24,7 +25,7 @@ const Button = ({
           transition
           cursor-pointer
           px-4
-          w-full 
+          ${size ? "w-full" : ""}
           ${outline ? "bg-white" : "bg-lime-500"}
           ${outline ? "border-black" : "border-pink-700"}
           ${outline ? "text-black" : "text-white"}
