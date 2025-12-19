@@ -20,7 +20,7 @@ const Card = ({ title, userName, stats }) => {
           {stats.map((item, index) => (
             <div
               key={index}
-              className={`p-4 rounded-xl ${item.bg} dark:bg-gray-800`}
+              className={`p-4 rounded-xl ${item.bg} dark:bg-gray-700 border dark:border-gray-700`}
             >
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {item.label}

@@ -5,8 +5,12 @@ const BloodDrop = ({ delay }) => {
   return (
     <motion.svg
       viewBox="0 0 100 160"
-      className="w-12 h-20 sm:w-14 sm:h-24 md:w-16 md:h-28 lg:w-20 lg:h-32 drop-shadow-xl"
       xmlns="http://www.w3.org/2000/svg"
+      className="
+        w-12 h-20 sm:w-14 sm:h-24 md:w-16 md:h-28 lg:w-20 lg:h-32
+        drop-shadow-xl
+        text-red-600 dark:text-rose-400
+      "
       initial={{ y: 0, scale: 1 }}
       animate={{
         y: [0, -15, 0],
@@ -19,7 +23,7 @@ const BloodDrop = ({ delay }) => {
         delay,
       }}
     >
-      {/* 🌈 Gradient */}
+      {/* Gradient */}
       <defs>
         <linearGradient
           id={`bloodGradient-${delay}`}
@@ -28,8 +32,8 @@ const BloodDrop = ({ delay }) => {
           x2="0"
           y2="1"
         >
-          <stop offset="0%" stopColor="#ef4444" />
-          <stop offset="100%" stopColor="#b91c1c" />
+          <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0.6" />
         </linearGradient>
       </defs>
 
@@ -43,12 +47,12 @@ const BloodDrop = ({ delay }) => {
         fill={`url(#bloodGradient-${delay})`}
       />
 
-      {/* 💧 Drip */}
+      {/* Drip */}
       <motion.circle
         cx="50"
         cy="150"
         r="4"
-        fill="#7f1d1d"
+        fill="currentColor"
         animate={{ opacity: [0, 1, 0], y: [0, 8] }}
         transition={{
           duration: 1.2,

@@ -2,29 +2,45 @@ import React from "react";
 
 const SidebarSkeleton = () => {
   return (
-    <div className="animate-pulse hidden md:flex md:flex-col justify-between bg-gray-100 dark:bg-gray-800 w-64 p-4 space-y-6">
-      {/* Avatar */}
-      <div className="w-20 h-20 rounded-full bg-gray-300 dark:bg-gray-700 mx-auto mb-4" />
-      {/* Name & Email */}
-      <div className="space-y-2">
-        <div className="h-4 w-24 bg-gray-300 dark:bg-gray-700 mx-auto rounded" />
-        <div className="h-3 w-32 bg-gray-200 dark:bg-gray-600 mx-auto rounded" />
+    <aside
+      className="fixed min-h-screen lg:static inset-y-0 left-0 z-50 w-64
+      bg-white dark:bg-gray-800
+      border-r border-gray-200 dark:border-gray-700
+      flex flex-col animate-pulse"
+    >
+      {/* Logo Skeleton */}
+      <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded bg-gray-300 dark:bg-gray-700" />
+          <div className="h-5 w-24 rounded bg-gray-300 dark:bg-gray-700" />
+        </div>
+        <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700 rounded lg:hidden" />
       </div>
-      {/* Menu Items */}
-      <div className="flex-1 mt-6 space-y-3">
-        {[...Array(5)].map((_, i) => (
-          <div
-            key={i}
-            className="h-6 w-3/4 bg-gray-300 dark:bg-gray-700 rounded mx-auto"
-          />
-        ))}
+
+      {/* Menu Skeleton */}
+      <div className="flex flex-col justify-between gap-50 h-vh">
+        {/* Top menu */}
+        <div>
+          <div className="mt-6 px-3">
+            <div className="h-10 w-[50%] rounded-lg bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div className="mt-6 px-3">
+            <div className="h-10 w-[70%] rounded-lg bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div className="mt-6 px-3">
+            <div className="h-10 w-[50%] rounded-lg bg-gray-200 dark:bg-gray-700" />
+          </div>
+          <div className="mt-6 px-3">
+            <div className="h-10 w-[70%] rounded-lg bg-gray-200 dark:bg-gray-700" />
+          </div>
+        </div>
+
+        {/* Logout Skeleton */}
+        <div className="px-3 mb-4">
+          <div className="h-10 w-[60%] rounded-lg bg-gray-200 dark:bg-gray-700" />
+        </div>
       </div>
-      {/* Bottom Theme + Logout */}
-      <div className="space-y-3">
-        <div className="h-6 w-20 bg-gray-300 dark:bg-gray-700 rounded mx-auto" />
-        <div className="h-10 w-full bg-gray-300 dark:bg-gray-700 rounded" />
-      </div>
-    </div>
+    </aside>
   );
 };
 

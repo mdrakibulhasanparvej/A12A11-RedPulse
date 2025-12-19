@@ -6,6 +6,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
 import Button from "../../ui/Button";
+import Welcome from "../../../pages/Dashboard/Welcome";
 
 const AdminStatics = () => {
   const { user } = useAuth();
@@ -66,8 +67,8 @@ const AdminStatics = () => {
     const totalUser = usersData?.users?.length || 0;
 
     return [
-      { label: "Total Requests", value: total, bg: "bg-red-50" },
       { label: "Total Users", value: totalUser, bg: "bg-green-50" },
+      { label: "Total Requests", value: total, bg: "bg-red-50" },
       { label: "Pending", value: pending, bg: "bg-yellow-50" },
       { label: "In Progress", value: inProgress, bg: "bg-blue-50" },
       { label: "Completed", value: completed, bg: "bg-green-50" },
@@ -100,6 +101,9 @@ const AdminStatics = () => {
 
   return (
     <div>
+      {/* welcome  */}
+
+      <Welcome />
       {/* Admin Stats */}
       <Card
         title="Admin Statistics"

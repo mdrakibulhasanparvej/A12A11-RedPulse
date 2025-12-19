@@ -6,7 +6,7 @@ const LoadingSpinner = ({ text = "Loading..." }) => {
   return (
     <div
       className="fixed w-full inset-0 z-50 flex flex-col items-center justify-center
-      bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm"
+       dark:bg-gray-900/95 backdrop-blur-sm"
     >
       {/*  Animated Drops */}
       <div className="flex items-end gap-4 md:gap-6">

@@ -30,7 +30,6 @@ const CreateDonationRequest = () => {
     setSelectedUnion,
   } = useBDLocation();
 
-  // Mutation using React Query v5
   const donationMutation = useMutation({
     mutationFn: async (donationRequest) => {
       const res = await axiosSecure.post("/donation-requests", donationRequest);
@@ -41,9 +40,8 @@ const CreateDonationRequest = () => {
       reset();
       queryClient.invalidateQueries({ queryKey: ["my-donation-requests"] });
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to create donation request");
-      console.error(error);
     },
   });
 
@@ -68,21 +66,31 @@ const CreateDonationRequest = () => {
     donationMutation.mutate(donationRequest);
   };
 
+  /* ================= LOADING ================= */
   if (userLoading) {
     return (
-      <div className="w-full! z-50 border border-green-600 p-6 bg-white rounded-2xl shadow text-center">
+      <div
+        className="w-full p-6 rounded-2xl shadow text-center
+      bg-white dark:bg-gray-800
+      text-gray-900 dark:text-gray-100"
+      >
         <p className="text-lg font-medium">Checking user status...</p>
       </div>
     );
   }
 
+  /* ================= BLOCKED ================= */
   if (dbUser?.status === "blocked") {
     return (
-      <div className="w-full mx-auto p-6 bg-white rounded-2xl shadow text-center">
-        <h2 className="text-2xl font-semibold text-red-600 mb-3">
+      <div
+        className="w-full mx-auto p-6 rounded-2xl shadow text-center
+      bg-white dark:bg-gray-800
+      text-gray-900 dark:text-gray-100"
+      >
+        <h2 className="text-2xl font-semibold text-red-600 dark:text-red-400 mb-3">
           Access Restricted 🚫
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-700 dark:text-gray-300">
           Your account is currently{" "}
           <span className="font-semibold">blocked</span>. You are not allowed to
           create donation requests.
@@ -91,216 +99,266 @@ const CreateDonationRequest = () => {
     );
   }
 
+  /* ================= FORM ================= */
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow">
+    <>
       <h2 className="text-2xl font-semibold mb-6">Create Donation Request</h2>
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      <div
+        className="w-full mx-auto p-6 rounded-2xl shadow
+    bg-white dark:bg-gray-800
+    text-gray-900 dark:text-gray-100"
       >
-        {/* Requester Info */}
-        <div>
-          <label className="label">Requester Name</label>
-          <input
-            type="text"
-            readOnly
-            value={user?.displayName || ""}
-            className="input input-bordered w-full bg-gray-100"
-          />
-        </div>
-        <div>
-          <label className="label">Requester Email</label>
-          <input
-            type="email"
-            readOnly
-            value={user?.email || ""}
-            className="input input-bordered w-full bg-gray-100"
-          />
-        </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          {/* Requester Name */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Requester Name
+            </label>
+            <input
+              readOnly
+              value={user?.displayName || ""}
+              className="input input-bordered w-full
+            bg-gray-100 dark:bg-gray-600
+            text-gray-900 dark:text-gray-100"
+            />
+          </div>
 
-        {/* Recipient Name */}
-        <div>
-          <label className="label">Recipient Name</label>
-          <input
-            {...register("recipientName", { required: true })}
-            type="text"
-            className="input input-bordered w-full"
-          />
-        </div>
+          {/* Requester Email */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Requester Email
+            </label>
+            <input
+              readOnly
+              value={user?.email || ""}
+              className="input input-bordered w-full
+            bg-gray-100 dark:bg-gray-600
+            text-gray-900 dark:text-gray-100"
+            />
+          </div>
 
-        {/* Division */}
-        <div>
-          <label className="label">Recipient Division</label>
-          <select
-            {...register("recipientDivision", { required: true })}
-            className="select select-bordered w-full"
-            value={selectedDivision?.id || ""}
-            onChange={(e) => {
-              const div = divisions.find((d) => d.id === e.target.value);
-              setSelectedDivision(div);
-            }}
-          >
-            <option value="">Select Division</option>
-            {divisions.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name} ({d.bn_name})
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Recipient Name */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Recipient Name
+            </label>
+            <input
+              {...register("recipientName", { required: true })}
+              className="input input-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+            />
+          </div>
 
-        {/* District */}
-        <div>
-          <label className="label">Recipient District</label>
-          <select
-            {...register("recipientDistrict", { required: true })}
-            className="select select-bordered w-full"
-            disabled={!selectedDivision}
-            value={selectedDistrict?.id || ""}
-            onChange={(e) => {
-              const dist = filteredDistricts.find(
-                (d) => d.id === e.target.value
-              );
-              setSelectedDistrict(dist);
-            }}
-          >
-            <option value="">Select District</option>
-            {filteredDistricts.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name} ({d.bn_name})
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Division */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Recipient Division
+            </label>
+            <select
+              className="select select-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+              value={selectedDivision?.id || ""}
+              onChange={(e) =>
+                setSelectedDivision(
+                  divisions.find((d) => d.id === e.target.value)
+                )
+              }
+            >
+              <option value="">Select Division</option>
+              {divisions.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name} ({d.bn_name})
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Upazila */}
-        <div>
-          <label className="label">Recipient Upazila</label>
-          <select
-            {...register("recipientUpazila", { required: true })}
-            className="select select-bordered w-full"
-            disabled={!selectedDistrict}
-            value={selectedUpazila?.id || ""}
-            onChange={(e) => {
-              const upa = filteredUpazilas.find((u) => u.id === e.target.value);
-              setSelectedUpazila(upa);
-            }}
-          >
-            <option value="">Select Upazila</option>
-            {filteredUpazilas.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name} ({u.bn_name})
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* District */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Recipient District
+            </label>
+            <select
+              disabled={!selectedDivision}
+              className="select select-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+              value={selectedDistrict?.id || ""}
+              onChange={(e) =>
+                setSelectedDistrict(
+                  filteredDistricts.find((d) => d.id === e.target.value)
+                )
+              }
+            >
+              <option value="">Select District</option>
+              {filteredDistricts.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name} ({d.bn_name})
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Union */}
-        <div>
-          <label className="label">Recipient Union</label>
-          <select
-            {...register("recipientUnion", { required: true })}
-            className="select select-bordered w-full"
-            disabled={!selectedUpazila}
-            value={selectedUnion?.id || ""}
-            onChange={(e) => {
-              const uni = filteredUnions.find((u) => u.id === e.target.value);
-              setSelectedUnion(uni);
-            }}
-          >
-            <option value="">Select Union</option>
-            {filteredUnions.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name} ({u.bn_name})
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Upazila */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Recipient Upazila
+            </label>
+            <select
+              disabled={!selectedDistrict}
+              className="select select-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+              value={selectedUpazila?.id || ""}
+              onChange={(e) =>
+                setSelectedUpazila(
+                  filteredUpazilas.find((u) => u.id === e.target.value)
+                )
+              }
+            >
+              <option value="">Select Upazila</option>
+              {filteredUpazilas.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name} ({u.bn_name})
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Hospital */}
-        <div>
-          <label className="label">Hospital Name</label>
-          <input
-            {...register("hospitalName", { required: true })}
-            type="text"
-            className="input input-bordered w-full"
-            placeholder="Dhaka Medical College Hospital"
-          />
-        </div>
+          {/* Union */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Recipient Union
+            </label>
+            <select
+              disabled={!selectedUpazila}
+              className="select select-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+              value={selectedUnion?.id || ""}
+              onChange={(e) =>
+                setSelectedUnion(
+                  filteredUnions.find((u) => u.id === e.target.value)
+                )
+              }
+            >
+              <option value="">Select Union</option>
+              {filteredUnions.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name} ({u.bn_name})
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Full Address */}
-        <div className="md:col-span-2">
-          <label className="label">Full Address</label>
-          <input
-            {...register("fullAddress", { required: true })}
-            type="text"
-            className="input input-bordered w-full"
-            placeholder="Zahir Raihan Rd, Dhaka"
-          />
-        </div>
+          {/* Hospital */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Hospital Name
+            </label>
+            <input
+              {...register("hospitalName", { required: true })}
+              className="input input-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+            />
+          </div>
 
-        {/* Blood Group */}
-        <div>
-          <label className="label">Blood Group</label>
-          <select
-            {...register("bloodGroup", { required: true })}
-            className="select select-bordered w-full"
-          >
-            <option value="">Select Blood Group</option>
-            {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bg) => (
-              <option key={bg} value={bg}>
-                {bg}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Full Address */}
+          <div className="md:col-span-2">
+            <label className="label text-gray-700 dark:text-gray-300">
+              Full Address
+            </label>
+            <input
+              {...register("fullAddress", { required: true })}
+              className="input input-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+            />
+          </div>
 
-        {/* Donation Date */}
-        <div>
-          <label className="label">Donation Date</label>
-          <input
-            {...register("donationDate", { required: true })}
-            type="date"
-            className="input input-bordered w-full"
-          />
-        </div>
+          {/* Blood Group */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Blood Group
+            </label>
+            <select
+              {...register("bloodGroup", { required: true })}
+              className="select select-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+            >
+              <option value="">Select Blood Group</option>
+              {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bg) => (
+                <option key={bg} value={bg}>
+                  {bg}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Donation Time */}
-        <div>
-          <label className="label">Donation Time</label>
-          <input
-            {...register("donationTime", { required: true })}
-            type="time"
-            className="input input-bordered w-full"
-          />
-        </div>
+          {/* Date */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Donation Date
+            </label>
+            <input
+              type="date"
+              {...register("donationDate", { required: true })}
+              className="input input-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+            />
+          </div>
 
-        {/* Request Message */}
-        <div className="md:col-span-2">
-          <label className="label">Request Message</label>
-          <textarea
-            {...register("requestMessage", { required: true })}
-            rows="4"
-            className="textarea textarea-bordered w-full"
-            placeholder="Explain why blood is needed"
-          />
-        </div>
+          {/* Time */}
+          <div>
+            <label className="label text-gray-700 dark:text-gray-300">
+              Donation Time
+            </label>
+            <input
+              type="time"
+              {...register("donationTime", { required: true })}
+              className="input input-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+            />
+          </div>
 
-        {/* Submit Button */}
-        <div className="md:col-span-2">
-          <Button
-            type="submit"
-            label={
-              donationMutation.isLoading
-                ? "Submitting..."
-                : "Request Blood Donation"
-            }
-            disabled={donationMutation.isLoading}
-          />
-        </div>
-      </form>
-    </div>
+          {/* Message */}
+          <div className="md:col-span-2">
+            <label className="label text-gray-700 dark:text-gray-300">
+              Request Message
+            </label>
+            <textarea
+              {...register("requestMessage", { required: true })}
+              rows="4"
+              className="textarea textarea-bordered w-full
+            bg-white dark:bg-gray-700
+            text-gray-900 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Submit */}
+          <div className="md:col-span-2">
+            <Button
+              type="submit"
+              label={
+                donationMutation.isLoading
+                  ? "Submitting..."
+                  : "Request Blood Donation"
+              }
+              disabled={donationMutation.isLoading}
+            />
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 

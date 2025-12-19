@@ -77,7 +77,7 @@ const MyDonationRequest = ({ limit = 10 }) => {
         My Recent Donation Requests
       </h2>
 
-      <div className="overflow-x-auto min-h-70vh md:w-[880px] lg:w-[1000px] p-6 bg-white rounded-2xl shadow">
+      <div className="overflow-x-auto min-h-70vh md:w-[880px] lg:w-[1000px] p-6 bg-white dark:bg-gray-800 rounded-2xl shadow">
         <table className="table table-xs table-pin-rows table-pin-cols table-zebra">
           <thead>
             <tr>
@@ -128,9 +128,9 @@ const MyDonationRequest = ({ limit = 10 }) => {
                   </span>
                 </td>
                 <td className="max-w-xs truncate">{request.requestMessage}</td>
-                <td className="whitespace-nowrap text-sm">
+                <th className="whitespace-nowrap text-sm">
                   <button className="btn btn-ghost btn-xs">Details</button>
-                </td>
+                </th>
               </tr>
             ))}
           </tbody>

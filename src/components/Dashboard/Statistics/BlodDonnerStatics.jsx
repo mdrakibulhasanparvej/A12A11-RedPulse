@@ -1,7 +1,7 @@
 import React from "react";
 import useAuth from "../../../hooks/useAuth";
 import Card from "../../ui/Card";
-import Welcome from "../../../pages/Dashboard/Donner/Welcome";
+import Welcome from "../../../pages/Dashboard/Welcome";
 import RecentDonationRequests from "../../../pages/Dashboard/Donner/RecentDonationRequests";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
