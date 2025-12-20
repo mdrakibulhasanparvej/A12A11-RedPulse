@@ -4,21 +4,24 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import AllusersTableRow from "../../../components/ui/Loading/ManageUsers/AllusersTableRow";
 import Swal from "sweetalert2";
 import { FaFilter } from "react-icons/fa";
-import usePagination from "../../../hooks/usePagination";
+import Pagination from "../../../components/ui/Pagination";
 
 const Allusers = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState("");
 
+  // ================= Pagination =================
+  const [currentPage, setCurrentPage] = useState(0);
   const limit = 10;
+  const skip = currentPage * limit;
 
   // ==================== Fetch Users ====================
   const { data, isLoading, error } = useQuery({
-    queryKey: ["users", statusFilter],
+    queryKey: ["users", statusFilter, skip, limit],
     queryFn: async ({ queryKey }) => {
       const [_key] = queryKey;
-      let url = `/users?limit=${limit}&skip=${currentPage * limit}`;
+      let url = `/users?limit=${limit}&skip=${skip}`;
       if (statusFilter) url += `&status=${statusFilter}`;
       const res = await axiosSecure.get(url);
       return res.data;
@@ -28,19 +31,7 @@ const Allusers = () => {
 
   const users = data?.users || [];
   const totalUsers = data?.totalUsers || 0;
-
-  // ==================== Use Pagination Hook ====================
-  const {
-    currentPage,
-    totalPages,
-    goToNextPage,
-    goToPrevPage,
-    goToPage,
-    setCurrentPage,
-  } = usePagination({
-    totalItems: totalUsers,
-    itemsPerPage: limit,
-  });
+  const totalPage = Math.ceil(totalUsers / limit);
 
   // ==================== Mutation for Role/Status ====================
   const mutation = useMutation({
@@ -281,30 +272,12 @@ const Allusers = () => {
         </tbody>
       </table>
 
-      {/* ===== Pagination using Hook ===== */}
-      <div className="flex justify-center flex-wrap gap-3 py-10">
-        {currentPage > 0 && (
-          <button onClick={goToPrevPage} className="btn">
-            Prev
-          </button>
-        )}
-
-        {[...Array(totalPages).keys()].map((i) => (
-          <button
-            key={i}
-            onClick={() => goToPage(i)}
-            className={`btn ${i === currentPage ? "btn-active" : ""}`}
-          >
-            {i + 1}
-          </button>
-        ))}
-
-        {currentPage < totalPages - 1 && (
-          <button onClick={goToNextPage} className="btn">
-            Next
-          </button>
-        )}
-      </div>
+      {/* Pagination */}
+      <Pagination
+        totalPage={totalPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
 
       {error && (
         <p className="text-center text-red-500 mt-4">Failed to load users ❌</p>

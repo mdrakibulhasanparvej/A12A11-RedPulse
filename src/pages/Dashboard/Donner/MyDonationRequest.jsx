@@ -3,15 +3,21 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { toast } from "react-toastify";
-import usePagination from "../../../hooks/usePagination";
+import { useState } from "react";
+import Pagination from "../../../components/ui/Pagination";
 
-const MyDonationRequest = ({ limit = 10 }) => {
+const MyDonationRequest = () => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
+  // ================= Pagination =================
+  const [currentPage, setCurrentPage] = useState(0);
+  const limit = 10;
+  const skip = currentPage * limit;
+
   // ==================== Fetch Donation Requests ====================
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["my-donation-requests", user?.email],
+    queryKey: ["my-donation-requests", user?.email, limit, skip],
     enabled: !!user?.email && !loading,
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -27,18 +33,7 @@ const MyDonationRequest = ({ limit = 10 }) => {
   // ==================== Prepare data & pagination ====================
   const requests = Array.isArray(data?.requests) ? data.requests : [];
   const totalRequests = data?.totalRequests || 0;
-
-  const {
-    currentPage,
-    totalPages,
-    goToNextPage,
-    goToPrevPage,
-    goToPage,
-    skip,
-  } = usePagination({
-    totalItems: totalRequests,
-    itemsPerPage: limit,
-  });
+  const totalPage = Math.ceil(totalRequests / limit);
 
   // ==================== Loading / Error States ====================
   if (loading || isLoading) {
@@ -136,30 +131,12 @@ const MyDonationRequest = ({ limit = 10 }) => {
           </tbody>
         </table>
 
-        {/* ===== Pagination Controls ===== */}
-        <div className="flex justify-center flex-wrap gap-3 py-6">
-          {currentPage > 0 && (
-            <button onClick={goToPrevPage} className="btn">
-              Prev
-            </button>
-          )}
-
-          {[...Array(totalPages).keys()].map((i) => (
-            <button
-              key={i}
-              onClick={() => goToPage(i)}
-              className={`btn ${i === currentPage ? "btn-active" : ""}`}
-            >
-              {i + 1}
-            </button>
-          ))}
-
-          {currentPage < totalPages - 1 && (
-            <button onClick={goToNextPage} className="btn">
-              Next
-            </button>
-          )}
-        </div>
+        {/* Pagination */}
+        <Pagination
+          totalPage={totalPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </>
   );

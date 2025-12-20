@@ -3,56 +3,35 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
-import usePagination from "../../hooks/usePagination";
 import Container from "../../components/ui/Container";
+import { useState } from "react";
+import Pagination from "../../components/ui/Pagination";
 
 const AllDonationRequest = () => {
-  const axiosPublic = useAxiosSecure();
+  const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch data
+  // ================= Pagination =================
+  const [currentPage, setCurrentPage] = useState(0);
+  const limit = 10;
+  const skip = currentPage * limit;
+
+  // ================= Fetch Data =================
   const { data, isLoading } = useQuery({
-    queryKey: ["pending-donation-requests"],
+    queryKey: ["pending-donation-requests", skip, limit],
     queryFn: async () => {
-      const res = await axiosPublic.get(
-        `/donation-request-all?status=pending&skip=0&limit=10`
-      );
-      return res.data;
-    },
-  });
-
-  const requests = data?.requests || [];
-  const totalRequests = data?.totalRequests || 0;
-
-  // pagination MUST use totalRequests
-  const {
-    currentPage,
-    totalPages,
-    goToNextPage,
-    goToPrevPage,
-    goToPage,
-    skip,
-    limit,
-  } = usePagination({
-    totalItems: data?.totalRequests ?? 0,
-    itemsPerPage: 10,
-  });
-
-  // refetch when page changes
-  const { data: paginatedData } = useQuery({
-    queryKey: ["pending-donation-requests", skip],
-    enabled: totalRequests > 0,
-    queryFn: async () => {
-      const res = await axiosPublic.get(
-        `/donation-request-all?status=pending&skip=${skip}&limit=${limit}`
+      const res = await axiosSecure.get(
+        `/donation-request-all?status=pending&limit=${limit}&skip=${skip}`
       );
       return res.data;
     },
     keepPreviousData: true,
   });
 
-  const finalRequests = paginatedData?.requests || requests;
+  const requests = data?.requests || [];
+  const totalRequests = data?.totalRequests || 0;
+  const totalPage = Math.ceil(totalRequests / limit);
 
   const handleView = (id) => {
     if (!user) {
@@ -64,16 +43,20 @@ const AllDonationRequest = () => {
     }
   };
 
-  if (isLoading) return <div className="text-center py-10">Loading...</div>;
+  if (isLoading) {
+    return <div className="text-center py-10">Loading...</div>;
+  }
 
   return (
     <Container>
-      <div className="w-full  mx-auto px-4 py-10">
-        <h2 className="text-2xl font-bold mb-8">Blood Donation Requests</h2>
+      <div className="w-full mx-auto px-4 py-10">
+        <h2 className="text-2xl font-bold mb-8">
+          Blood Donation Requests ({totalRequests})
+        </h2>
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {finalRequests.map((req) => (
+          {requests.map((req) => (
             <div
               key={req._id}
               className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm"
@@ -86,9 +69,10 @@ const AllDonationRequest = () => {
                   {req.status}
                 </p>
               </div>
-              <div className="grid grid-cols-2">
+
+              <div className="grid grid-cols-2 mt-2 text-sm">
                 <p>
-                  <b>Blood Group:</b> {req.bloodGroup}
+                  <b>Blood:</b> {req.bloodGroup}
                 </p>
                 <p>
                   <b>Location:</b> {req.recipientDistrict}
@@ -103,7 +87,7 @@ const AllDonationRequest = () => {
 
               <button
                 onClick={() => handleView(req._id)}
-                className="btn btn-sm bg-linear-to-r from-[#6A0B37] to-[#B32346] hover:bg-red-800 text-white mt-3"
+                className="btn btn-sm bg-linear-to-r from-[#6A0B37] to-[#B32346] text-white mt-3"
               >
                 View
               </button>
@@ -112,39 +96,11 @@ const AllDonationRequest = () => {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center gap-2 mt-10">
-            <button
-              className="btn"
-              onClick={goToPrevPage}
-              disabled={currentPage === 0}
-            >
-              Prev
-            </button>
-
-            {[...Array(totalPages).keys()].map((page) => (
-              <button
-                key={page}
-                onClick={() => goToPage(page)}
-                className={
-                  page === currentPage
-                    ? "font-bold btn bg-linear-to-r from-[#6A0B37]/90 to-[#B32346]/90 text-white"
-                    : "btn"
-                }
-              >
-                {page + 1}
-              </button>
-            ))}
-
-            <button
-              className="btn"
-              onClick={goToNextPage}
-              disabled={currentPage === totalPages - 1}
-            >
-              Next
-            </button>
-          </div>
-        )}
+        <Pagination
+          totalPage={totalPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </Container>
   );

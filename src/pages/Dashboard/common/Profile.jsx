@@ -123,13 +123,13 @@ const Profile = () => {
   if (isLoading) return <ProfileSkeleton />;
 
   return (
-    <div className="px-6 py-6">
+    <div className=" py-6">
       <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
         My Profile
       </h2>
 
       <motion.div
-        className="p-6 rounded-2xl border dark:border-gray-700 max-w-5xl mx-auto bg-white dark:bg-gray-900"
+        className="p-6 rounded-2xl border border-gray-300 shadow-sm dark:border-gray-700 max-w-5xl mx-auto bg-white dark:bg-gray-900"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

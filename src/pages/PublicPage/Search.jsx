@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
-import usePagination from "../../hooks/usePagination";
 import Container from "../../components/ui/Container";
 import useDistrictUpazila from "../../hooks/useDistrictUpazila";
 
@@ -14,15 +13,16 @@ const Search = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  /* =======================
-     SEARCH STATE
-  ======================= */
+  // ================= Pagination =================
+  const [currentPage, setCurrentPage] = useState(0);
+  const limit = 10;
+  const skip = currentPage * limit;
+
+  // =================  SEARCH STATE =================
   const [bloodGroup, setBloodGroup] = useState("");
   const [searchTriggered, setSearchTriggered] = useState(false);
 
-  /* =======================
-     LOCATION HOOK
-  ======================= */
+  // =================  LOCATION HOOK =================
   const {
     districts,
     filteredUpazilas,
@@ -32,25 +32,7 @@ const Search = () => {
     setSelectedUpazila,
   } = useDistrictUpazila();
 
-  /* =======================
-     PAGINATION
-  ======================= */
-  const {
-    currentPage,
-    totalPages,
-    goToNextPage,
-    goToPrevPage,
-    goToPage,
-    skip,
-    limit,
-  } = usePagination({
-    totalItems: 0,
-    itemsPerPage: 10,
-  });
-
-  /* =======================
-     DATA FETCH
-  ======================= */
+  // =================   DATA FETCH =================
   const { data, isLoading } = useQuery({
     queryKey: [
       "public-search",
@@ -78,10 +60,9 @@ const Search = () => {
 
   const requests = data?.requests || [];
   const totalRequests = data?.totalRequests || 0;
+  const totalPage = Math.ceil(totalRequests / limit);
 
-  /* =======================
-     HANDLERS
-  ======================= */
+  // =================   HANDLERS =================
   const handleSearch = (e) => {
     e.preventDefault();
     if (!bloodGroup || !selectedDistrict || !selectedUpazila) return;
@@ -297,6 +278,31 @@ const Search = () => {
             </>
           )}
         </div>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center flex-wrap gap-3 py-10">
+        {currentPage > 0 && (
+          <button onClick={() => setCurrentPage((p) => p - 1)} className="btn">
+            Prev
+          </button>
+        )}
+
+        {Array.from({ length: totalPage }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i)}
+            className={`btn ${i === currentPage ? "btn-primary" : ""}`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        {currentPage < totalPage - 1 && (
+          <button onClick={() => setCurrentPage((p) => p + 1)} className="btn">
+            Next
+          </button>
+        )}
       </div>
     </Container>
   );

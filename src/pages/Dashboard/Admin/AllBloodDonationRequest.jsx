@@ -3,26 +3,37 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import Pagination from "../../../components/ui/Pagination";
 
-const AllBloodDonationRequest = ({ limit = 3 }) => {
+const AllBloodDonationRequest = () => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["my-donation-requests", user?.email, limit],
+  // ================= Pagination =================
+  const [currentPage, setCurrentPage] = useState(0);
+  const limit = 10;
+  const skip = currentPage * limit;
+
+  // ================= Fetch Data =================
+  const { data, isLoading } = useQuery({
+    queryKey: ["pending-donation-requests", user?.email, skip, limit],
     enabled: !!user?.email && !loading,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/donation-request-all?limit=${limit}`);
+      const res = await axiosSecure.get(
+        `/donation-request-all?limit=${limit}&skip=${skip}`
+      );
       return res.data;
     },
     onError: () => {
       toast.error("Failed to load donation requests");
     },
+    keepPreviousData: true,
   });
 
-  console.log(data);
-  // Ensure requests is always an array
-  const requests = Array.isArray(data?.requests) ? data.requests : [];
+  const requests = data?.requests || [];
+  const totalRequests = data?.totalRequests || 0;
+  const totalPage = Math.ceil(totalRequests / limit);
 
   if (loading || isLoading) {
     return (
@@ -30,14 +41,6 @@ const AllBloodDonationRequest = ({ limit = 3 }) => {
         <p className="text-center text-gray-500">
           Loading your donation requests...
         </p>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="max-w-6xl mx-auto p-6 text-center text-red-500">
-        Something went wrong while loading data.
       </div>
     );
   }
@@ -62,6 +65,7 @@ const AllBloodDonationRequest = ({ limit = 3 }) => {
         <table className="table table-zebra table-pin-rows table-pin-cols w-full text-gray-900 dark:text-gray-100">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+              <th>#</th>
               <th>Recipient</th>
               <th>Address</th>
               <th>Hospital</th>
@@ -75,13 +79,14 @@ const AllBloodDonationRequest = ({ limit = 3 }) => {
           </thead>
 
           <tbody>
-            {requests.map((request) => (
+            {requests.map((request, index) => (
               <tr
                 key={request._id}
                 className="hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               >
-                <td>
-                  <div className="flex items-center gap-3">
+                <td>{index + 1}</td>
+                <td className="whitespace-nowrap space-x-2">
+                  <div className="items-center gap-3">
                     <div>
                       <div className="font-bold">{request.recipientName}</div>
                     </div>
@@ -93,9 +98,13 @@ const AllBloodDonationRequest = ({ limit = 3 }) => {
                   <div>{request.recipientUpazila}</div>
                 </td>
 
-                <td>{request.hospitalName}</td>
+                <td className="whitespace-nowrap space-x-2">
+                  {request.hospitalName}
+                </td>
                 <td>{request.bloodGroup}</td>
-                <td>{request.donationDate}</td>
+                <td className="whitespace-nowrap space-x-2">
+                  {request.donationDate}
+                </td>
                 <td>{request.donationTime}</td>
 
                 <td>
@@ -147,6 +156,12 @@ const AllBloodDonationRequest = ({ limit = 3 }) => {
           </tfoot>
         </table>
       </div>
+      {/* Pagination */}
+      <Pagination
+        totalPage={totalPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </>
   );
 };
