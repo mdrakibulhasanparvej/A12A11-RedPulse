@@ -1,5 +1,6 @@
 // Footer.jsx
 import React from "react";
+import { Link } from "react-router";
 
 const Footer = () => {
   return (
@@ -61,9 +62,12 @@ const Footer = () => {
       <div className="mt-10 border-t border-gray-700 pt-8 flex flex-col lg:flex-row justify-between items-center gap-6">
         <div className="text-center lg:text-left">
           <p className="text-xl font-semibold mb-2">Ready to get started?</p>
-          <button className="bg-white text-gray-900 px-6 py-2 rounded-md hover:bg-gray-200">
-            Donate
-          </button>
+          <Link
+            to="/donation-request"
+            className="btn text-[#B32346] bg-[#6A0B37]/20 dark:text-white dark:bg-linear-to-br from-[#B32346]/70 to-[#6A0B37]/70"
+          >
+            Donate Now
+          </Link>
         </div>
 
         <div className="flex gap-4">

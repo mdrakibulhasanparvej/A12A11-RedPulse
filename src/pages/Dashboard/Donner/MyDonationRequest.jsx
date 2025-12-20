@@ -4,7 +4,7 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import Pagination from "../../../components/ui/Pagination";
+import Pagination from "../../../components/Shared/Pagination";
 
 const MyDonationRequest = () => {
   const { user, loading } = useAuth();

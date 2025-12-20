@@ -4,11 +4,14 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import Pagination from "../../../components/ui/Pagination";
+import Pagination from "../../../components/Shared/Pagination";
+import DonationRequestTable from "../../../components/Shared/DonationRequestTable";
+import { useNavigate } from "react-router";
 
 const AllBloodDonationRequest = () => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   // ================= Pagination =================
   const [currentPage, setCurrentPage] = useState(0);
@@ -58,109 +61,15 @@ const AllBloodDonationRequest = () => {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
-        All Recent Donation Requests
-      </h2>
-      <div className="overflow-x-auto min-h-70vh w-[930px] p-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm transition-colors">
-        <table className="table table-zebra table-pin-rows table-pin-cols w-full text-gray-900 dark:text-gray-100">
-          <thead>
-            <tr className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-              <th>#</th>
-              <th>Recipient</th>
-              <th>Address</th>
-              <th>Hospital</th>
-              <th>Blood</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Status</th>
-              <th>Message</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {requests.map((request, index) => (
-              <tr
-                key={request._id}
-                className="hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >
-                <td>{index + 1}</td>
-                <td className="whitespace-nowrap space-x-2">
-                  <div className="items-center gap-3">
-                    <div>
-                      <div className="font-bold">{request.recipientName}</div>
-                    </div>
-                  </div>
-                </td>
-
-                <td className="text-sm">
-                  <div>{request.recipientDistrict}</div>
-                  <div>{request.recipientUpazila}</div>
-                </td>
-
-                <td className="whitespace-nowrap space-x-2">
-                  {request.hospitalName}
-                </td>
-                <td>{request.bloodGroup}</td>
-                <td className="whitespace-nowrap space-x-2">
-                  {request.donationDate}
-                </td>
-                <td>{request.donationTime}</td>
-
-                <td>
-                  <span
-                    className={`badge ${
-                      request.status === "pending"
-                        ? "badge-warning"
-                        : request.status === "inprogress"
-                          ? "badge-info"
-                          : "badge-success"
-                    }`}
-                  >
-                    {request.status}
-                  </span>
-                </td>
-
-                <td className="max-w-xs truncate">{request.requestMessage}</td>
-
-                {/* Actions */}
-                <th className="flex flex-col items-center justify-center space-y-1">
-                  <button className="btn w-full btn-info text-white btn-xs">
-                    View
-                  </button>
-
-                  <button className="btn w-full btn-warning text-white btn-xs">
-                    Update
-                  </button>
-
-                  <button className="btn w-full btn-error text-white btn-xs">
-                    Delete
-                  </button>
-                </th>
-              </tr>
-            ))}
-          </tbody>
-
-          <tfoot>
-            <tr className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-              <th>Recipient</th>
-              <th>Address</th>
-              <th>Hospital</th>
-              <th>Blood</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Status</th>
-              <th>Message</th>
-              <th>Action</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      {/* Pagination */}
-      <Pagination
+      <DonationRequestTable
+        title="All Recent Donation Requests"
+        requests={requests}
         totalPage={totalPage}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
+        onView={(request) => navigate(`/donation/${request._id}`)}
+        onUpdate={(request) => navigate(`/dashboard/update/${request._id}`)}
+        onDelete={(request) => handleDelete(request._id)}
       />
     </>
   );

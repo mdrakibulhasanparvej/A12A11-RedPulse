@@ -4,12 +4,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import Container from "../../../components/ui/Container";
+import Swal from "sweetalert2";
 
 const DonationRequestDetails = () => {
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  //   console.log(user);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -27,7 +30,7 @@ const DonationRequestDetails = () => {
   // Mutation to update status to inprogress
   const donationMutation = useMutation({
     mutationFn: async () => {
-      const res = await axiosSecure.patch(`/donation-request-status/${id}`, {
+      const res = await axiosSecure.patch(`/donation-request-all/${id}`, {
         status: "inprogress",
         donorName: user?.displayName,
         donorEmail: user?.email,
@@ -37,17 +40,43 @@ const DonationRequestDetails = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["donation-request", id]);
       setIsModalOpen(false);
-      alert("Donation confirmed! Status updated to inprogress.");
+      // SweetAlert success notification
+      Swal.fire({
+        icon: "success",
+        title: "Donation confirmed!",
+        text: "Status updated to inprogress.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     },
     onError: (err) => {
       console.error(err);
-      alert("Failed to confirm donation.");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to confirm donation",
+        text: "Something went wrong. Please try again.",
+      });
     },
   });
 
-  const handleDonate = (e) => {
+  // Updated handleDonate with Swal confirmation
+  const handleDonate = async (e) => {
     e.preventDefault();
-    donationMutation.mutate();
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to confirm this donation?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, Confirm",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      donationMutation.mutate();
+    }
   };
 
   if (isLoading) return <div className="text-center py-10">Loading...</div>;
@@ -57,7 +86,7 @@ const DonationRequestDetails = () => {
   return (
     <Container>
       <div className="w-full mx-auto py-10 px-4">
-        <h2 className="text-3xl font-bold mb-8 bg-linear-to-r from-[#6A0B37] to-[#B32346] bg-clip-text text-transparent ">
+        <h2 className="text-3xl font-bold mb-8">
           Blood Donation Request Details
         </h2>
 
@@ -215,7 +244,7 @@ const DonationRequestDetails = () => {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black/30 bg-opacity-50 z-50">
             <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 max-w-md w-full shadow-2xl relative">
               <h3 className="text-2xl font-bold mb-4 text-red-600">
                 Confirm Donation

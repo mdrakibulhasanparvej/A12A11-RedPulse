@@ -1,6 +1,6 @@
 import React from "react";
 import useAuth from "../../../hooks/useAuth";
-import Card from "../../ui/Card";
+import Card from "../../Shared/StatisticsCard";
 import Welcome from "../../../pages/Dashboard/Welcome";
 import RecentDonationRequests from "../../../pages/Dashboard/Donner/RecentDonationRequests";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";

@@ -1,12 +1,11 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import Card from "../../ui/Card";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
-import { Link } from "react-router";
-import Button from "../../ui/Button";
 import Welcome from "../../../pages/Dashboard/Welcome";
+import { Link } from "react-router";
+import StatisticsCard from "../../Shared/StatisticsCard";
 
 const AdminStatics = () => {
   const { user } = useAuth();
@@ -20,9 +19,7 @@ const AdminStatics = () => {
   } = useQuery({
     queryKey: ["donation-requests"],
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        "/donation-request-all?skip=0&limit=1000"
-      );
+      const res = await axiosSecure.get("/donation-request-all?");
       return res.data;
     },
     onError: () => toast.error("Failed to fetch donation requests"),
@@ -36,7 +33,7 @@ const AdminStatics = () => {
   } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/users?status=active&skip=0&limit=8");
+      const res = await axiosSecure.get("/users");
       return res.data;
     },
     onError: () => toast.error("Failed to fetch users"),
@@ -48,30 +45,49 @@ const AdminStatics = () => {
     if (!donationData)
       return [
         { label: "Total Requests", value: 0, bg: "bg-red-50" },
+        { label: "Total Active Requests", value: 0, bg: "bg-red-50" },
+        { label: "Total Blocked Requests", value: 0, bg: "bg-red-50" },
         { label: "Pending", value: 0, bg: "bg-yellow-50" },
         { label: "In Progress", value: 0, bg: "bg-blue-50" },
         { label: "Completed", value: 0, bg: "bg-green-50" },
+        { label: "Cancel", value: 0, bg: "bg-green-50" },
       ];
 
     const total = donationData.totalRequests || 0;
+
     const pending = donationData.requests.filter(
       (r) => r.status === "pending"
     ).length;
     const inProgress = donationData.requests.filter(
-      (r) => r.status === "in-progress"
+      (r) => r.status === "inprogress"
     ).length;
     const completed = donationData.requests.filter(
       (r) => r.status === "completed"
     ).length;
+    const cancel = donationData.requests.filter(
+      (r) => r.status === "cancel"
+    ).length;
 
     const totalUser = usersData?.users?.length || 0;
 
+    const activeUser = usersData?.users.filter(
+      (a) => a.status === "active"
+    ).length;
+    const blockedUser = usersData?.users.filter(
+      (a) => a.status === "blocked"
+    ).length;
+
+    // console.log(blockedUser);
+
     return [
       { label: "Total Users", value: totalUser, bg: "bg-green-50" },
+      { label: "Total Active Users", value: activeUser, bg: "bg-green-50" },
+      { label: "Total Blocked Users", value: blockedUser, bg: "bg-green-50" },
       { label: "Total Requests", value: total, bg: "bg-red-50" },
       { label: "Pending", value: pending, bg: "bg-yellow-50" },
       { label: "In Progress", value: inProgress, bg: "bg-blue-50" },
       { label: "Completed", value: completed, bg: "bg-green-50" },
+      { label: "Cancel", value: cancel, bg: "bg-green-50" },
     ];
   }, [donationData, usersData]);
 
@@ -105,33 +121,32 @@ const AdminStatics = () => {
 
       <Welcome />
       {/* Admin Stats */}
-      <Card
+      <StatisticsCard
         title="Admin Statistics"
         userName={user?.displayName || "Admin"}
         stats={donorStats}
       />
 
       {/* New Users + Recent Orders */}
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mt-6">
-        Recent Users
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mt-8">
+        Recent New Users
       </h2>
       <div className="flex flex-col gap-6 mt-6">
         {/* New Users */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
-          <h2 className="text-xl font-semibold text-white mb-6">New Users</h2>
           <div className="grid grid-cols-4 gap-4">
             {newUsers.map((userItem, i) => (
               <div key={i} className="text-center">
                 <div
-                  className={`w-16 h-16 mx-auto rounded-full overflow-hidden mb-3 relative ${i === 0 ? "ring-4 ring-green-500" : ""}`}
+                  className={`w-16 md:20 h-16 md:20 mx-auto rounded-full overflow-hidden mb-3 relative ${i === 0 ? "ring-4 ring-green-500" : "ring-4 ring-red-800"} `}
                 >
                   <img
-                    src="/api/placeholder/64/64"
+                    src={userItem.avatar}
                     alt={userItem.name || userItem.displayName || "User"}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <p className="text-white font-medium">
+                <p className="dark:text-white font-medium">
                   {userItem.name || userItem.displayName}
                 </p>
                 <p className="text-xs text-gray-400">
@@ -184,7 +199,12 @@ const AdminStatics = () => {
                 )}
               </tbody>
             </table>
-            <Button label=" Show All" />
+            <Link
+              className="btn my-6 bg-linear-to-br from-[#6A0B37] to-[#B32346] text-white"
+              to="all-blood-donation-request"
+            >
+              Show All
+            </Link>
           </div>
         </div>
       </div>

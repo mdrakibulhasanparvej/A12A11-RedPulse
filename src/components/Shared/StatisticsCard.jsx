@@ -1,6 +1,6 @@
 import React from "react";
 
-const Card = ({ title, userName, stats }) => {
+const StatisticsCard = ({ title, userName, stats }) => {
   return (
     <>
       {/* Title */}
@@ -20,7 +20,7 @@ const Card = ({ title, userName, stats }) => {
           {stats.map((item, index) => (
             <div
               key={index}
-              className={`p-4 rounded-xl ${item.bg} dark:bg-gray-700 border dark:border-gray-700`}
+              className={`p-4 rounded-xl ${item.bg} dark:bg-gray-700 shadow-md`}
             >
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {item.label}
@@ -36,4 +36,4 @@ const Card = ({ title, userName, stats }) => {
   );
 };
 
-export default Card;
+export default StatisticsCard;

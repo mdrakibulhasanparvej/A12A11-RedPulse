@@ -5,7 +5,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Container from "../../components/ui/Container";
 import { useState } from "react";
-import Pagination from "../../components/ui/Pagination";
+import Pagination from "../../components/Shared/Pagination";
 
 const AllDonationRequest = () => {
   const axiosSecure = useAxiosSecure();

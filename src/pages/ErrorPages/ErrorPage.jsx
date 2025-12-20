@@ -20,7 +20,7 @@ const ErrorPage = () => {
 
         {/* Description */}
         <p className="text-gray-600 dark:text-gray-400 mb-8">
-          The page you’re looking for doesn’t exist or an unexpected error
+          The page you're looking for doesn't exist or an unexpected error
           occurred. Please try again or go back home.
         </p>
 
@@ -34,10 +34,10 @@ const ErrorPage = () => {
           </Link>
 
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => window.history.back()}
             className="px-6 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
           >
-            Reload Page
+            Go Back
           </button>
         </div>
       </div>

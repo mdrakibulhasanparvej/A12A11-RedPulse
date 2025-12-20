@@ -42,10 +42,16 @@ const Banner = () => {
             </p>
 
             <div className="pt-6 flex gap-5">
-              <Link to="/register" className="btn dark:outline">
+              <Link
+                to="/register"
+                className="btn text-[#B32346] bg-[#6A0B37]/20 dark:text-white dark:bg-linear-to-br from-[#B32346]/70 to-[#6A0B37]/70"
+              >
                 Join as a donor
               </Link>
-              <Link to="/search" className="btn dark:outline">
+              <Link
+                to="/search"
+                className="btn text-[#B32346] bg-[#6A0B37]/20 dark:text-white dark:bg-linear-to-br from-[#B32346]/70 to-[#6A0B37]/70"
+              >
                 Search Donors
               </Link>
             </div>
