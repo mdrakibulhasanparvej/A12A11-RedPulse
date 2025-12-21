@@ -44,13 +44,14 @@ const AdminStatics = () => {
   const donorStats = React.useMemo(() => {
     if (!donationData)
       return [
-        { label: "Total Requests", value: 0, bg: "bg-red-50" },
-        { label: "Total Active Requests", value: 0, bg: "bg-red-50" },
-        { label: "Total Blocked Requests", value: 0, bg: "bg-red-50" },
-        { label: "Pending", value: 0, bg: "bg-yellow-50" },
+        { label: "Total Users", value: 0, bg: "bg-yellow-50" },
+        { label: "Total Active Users", value: 0, bg: "bg-green-50" },
+        { label: "Total Blocked Users", value: 0, bg: "bg-red-50" },
+        { label: "Total Requests", value: 0, bg: "bg-yellow-50" },
+        { label: "Pending", value: 0, bg: "bg-orange-50" },
         { label: "In Progress", value: 0, bg: "bg-blue-50" },
         { label: "Completed", value: 0, bg: "bg-green-50" },
-        { label: "Cancel", value: 0, bg: "bg-green-50" },
+        { label: "Cancel", value: 0, bg: "bg-red-50" },
       ];
 
     const total = donationData.totalRequests || 0;
@@ -62,7 +63,7 @@ const AdminStatics = () => {
       (r) => r.status === "inprogress"
     ).length;
     const completed = donationData.requests.filter(
-      (r) => r.status === "completed"
+      (r) => r.status === "done"
     ).length;
     const cancel = donationData.requests.filter(
       (r) => r.status === "cancel"
@@ -80,14 +81,14 @@ const AdminStatics = () => {
     // console.log(blockedUser);
 
     return [
-      { label: "Total Users", value: totalUser, bg: "bg-green-50" },
+      { label: "Total Users", value: totalUser, bg: "bg-yellow-50" },
       { label: "Total Active Users", value: activeUser, bg: "bg-green-50" },
-      { label: "Total Blocked Users", value: blockedUser, bg: "bg-green-50" },
-      { label: "Total Requests", value: total, bg: "bg-red-50" },
-      { label: "Pending", value: pending, bg: "bg-yellow-50" },
+      { label: "Total Blocked Users", value: blockedUser, bg: "bg-red-50" },
+      { label: "Total Requests", value: total, bg: "bg-yellow-50" },
+      { label: "Pending", value: pending, bg: "bg-orange-50" },
       { label: "In Progress", value: inProgress, bg: "bg-blue-50" },
       { label: "Completed", value: completed, bg: "bg-green-50" },
-      { label: "Cancel", value: cancel, bg: "bg-green-50" },
+      { label: "Cancel", value: cancel, bg: "bg-red-50" },
     ];
   }, [donationData, usersData]);
 
@@ -184,7 +185,22 @@ const AdminStatics = () => {
                       <td className="py-2">
                         {new Date(order.donationDate).toLocaleDateString()}
                       </td>
-                      <td className="py-2 capitalize">{order.status}</td>
+                      {/* status */}
+                      <td>
+                        <span
+                          className={`badge ${
+                            order.status === "pending"
+                              ? "badge-warning text-white"
+                              : order.status === "inprogress"
+                                ? "badge-info text-white"
+                                : order.status === "done"
+                                  ? "badge-success text-white "
+                                  : "badge-error text-white "
+                          }`}
+                        >
+                          {order.status}
+                        </span>
+                      </td>
                     </tr>
                   ))
                 ) : (

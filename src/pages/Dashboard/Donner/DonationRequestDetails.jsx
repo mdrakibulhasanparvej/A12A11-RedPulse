@@ -198,12 +198,16 @@ const DonationRequestDetails = () => {
                 <td className="font-bold text-gray-800 dark:text-gray-200">
                   Status
                 </td>
-                <td colSpan={3}>
+                <td>
                   <span
-                    className={`px-2 py-1 rounded-lg font-semibold ${
+                    className={`badge ${
                       request.status === "pending"
-                        ? "bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100"
-                        : "bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-100"
+                        ? "badge-warning text-white"
+                        : request.status === "inprogress"
+                          ? "badge-info text-white"
+                          : request.status === "done"
+                            ? "badge-success text-white "
+                            : "badge-error text-white "
                     }`}
                   >
                     {request.status}

@@ -41,16 +41,16 @@ const Banner = () => {
               Be the reason someone gets another tomorrow.
             </p>
 
-            <div className="pt-6 flex gap-5">
+            <div className="pt-6 flex justify-center md:justify-start gap-5">
               <Link
                 to="/register"
-                className="btn text-[#B32346] bg-[#6A0B37]/20 dark:text-white dark:bg-linear-to-br from-[#B32346]/70 to-[#6A0B37]/70"
+                className="btn bg-[#6A0B37]/20 bg-linear-to-br from-[#B32346]/70 to-[#6A0B37]/70 text-white outline-none ring-0 focus:outline-none focus:ring-0"
               >
                 Join as a donor
               </Link>
               <Link
                 to="/search"
-                className="btn text-[#B32346] bg-[#6A0B37]/20 dark:text-white dark:bg-linear-to-br from-[#B32346]/70 to-[#6A0B37]/70"
+                className="btn bg-[#6A0B37]/20 bg-linear-to-br from-[#B32346]/70 to-[#6A0B37]/70 text-white outline-none ring-0 focus:outline-none focus:ring-0"
               >
                 Search Donors
               </Link>

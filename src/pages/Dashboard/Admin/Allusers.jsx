@@ -237,7 +237,7 @@ const Allusers = () => {
                     </td>
 
                     <td>{user.role}</td>
-
+                    {/* Action */}
                     <th className="flex flex-col items-center space-y-1">
                       {/* role change  */}
                       {user.role === "donor" && (

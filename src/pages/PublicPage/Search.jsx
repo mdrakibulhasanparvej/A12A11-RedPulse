@@ -5,6 +5,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import Container from "../../components/ui/Container";
 import useDistrictUpazila from "../../hooks/useDistrictUpazila";
+import Pagination from "../../components/Shared/Pagination";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -40,19 +41,21 @@ const Search = () => {
       selectedDistrict?.name,
       selectedUpazila?.name,
       skip,
+      limit,
     ],
     enabled: searchTriggered,
     queryFn: async () => {
-      const res = await axiosPublic.get("/donation-request-all", {
-        params: {
-          status: "pending",
-          bloodGroup,
-          district: selectedDistrict?.name,
-          upazila: selectedUpazila?.name,
-          skip,
-          limit,
-        },
-      });
+      const res = await axiosPublic.get(
+        `/donation-request-all?skip=${skip}&&limit=${limit}`,
+        {
+          params: {
+            status: "pending",
+            bloodGroup,
+            district: selectedDistrict?.name,
+            upazila: selectedUpazila?.name,
+          },
+        }
+      );
       return res.data;
     },
     keepPreviousData: true,
@@ -177,7 +180,7 @@ const Search = () => {
           </button>
         </form>
 
-        <div className="min-h-screen">
+        <div className="">
           {/* ================= RESULT ================= */}
           {!searchTriggered && (
             <p className="text-center text-gray-500">
@@ -240,70 +243,17 @@ const Search = () => {
                   </div>
                 ))}
               </div>
-
-              {/* ================= PAGINATION ================= */}
-              {totalPages > 1 && (
-                <div className="flex justify-center gap-2 mt-10">
-                  <button
-                    className="btn"
-                    onClick={goToPrevPage}
-                    disabled={currentPage === 0}
-                  >
-                    Prev
-                  </button>
-
-                  {[...Array(totalPages).keys()].map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => goToPage(page)}
-                      className={
-                        page === currentPage
-                          ? "font-bold btn bg-linear-to-r from-[#6A0B37]/90 to-[#B32346]/90 text-white"
-                          : "btn"
-                      }
-                    >
-                      {page + 1}
-                    </button>
-                  ))}
-
-                  <button
-                    className="btn"
-                    onClick={goToNextPage}
-                    disabled={currentPage === totalPages - 1}
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
             </>
           )}
         </div>
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center flex-wrap gap-3 py-10">
-        {currentPage > 0 && (
-          <button onClick={() => setCurrentPage((p) => p - 1)} className="btn">
-            Prev
-          </button>
-        )}
-
-        {Array.from({ length: totalPage }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentPage(i)}
-            className={`btn ${i === currentPage ? "btn-primary" : ""}`}
-          >
-            {i + 1}
-          </button>
-        ))}
-
-        {currentPage < totalPage - 1 && (
-          <button onClick={() => setCurrentPage((p) => p + 1)} className="btn">
-            Next
-          </button>
-        )}
-      </div>
+      <Pagination
+        totalPage={totalPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </Container>
   );
 };

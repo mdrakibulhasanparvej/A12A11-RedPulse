@@ -1,14 +1,21 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import Pagination from "../../../components/Shared/Pagination";
+import DonationRequestTable from "../../../components/Shared/DonationRequestTable";
+import DonationDetailsModal from "../../../components/Modal/DonationDetailsModal";
+import Swal from "sweetalert2";
 
 const MyDonationRequest = () => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
+
+  // ================= Donation Details Modal =================
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // ================= Pagination =================
   const [currentPage, setCurrentPage] = useState(0);
@@ -30,12 +37,67 @@ const MyDonationRequest = () => {
     },
   });
 
-  // ==================== Prepare data & pagination ====================
-  const requests = Array.isArray(data?.requests) ? data.requests : [];
+  const requests = data?.requests || [];
   const totalRequests = data?.totalRequests || 0;
   const totalPage = Math.ceil(totalRequests / limit);
 
-  // ==================== Loading / Error States ====================
+  // ================= Update status =================
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, status }) => {
+      const res = await axiosSecure.patch(`/donation-request-all/${id}`, {
+        status,
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Donation request updated");
+      queryClient.invalidateQueries(["pending-donation-requests"]);
+    },
+    onError: () => {
+      toast.error("Failed to update donation request");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await axiosSecure.delete(`/donation-request-all/${id}`);
+      return res.data;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+  });
+
+  const handleUpdate = (request) => {
+    Swal.fire({
+      title: "Update Donation Status",
+      text: "What do you want to do with this request?",
+      icon: "question",
+      showCancelButton: true,
+      showDenyButton: true,
+
+      confirmButtonText: "Done",
+      denyButtonText: "Cancel Request",
+      cancelButtonText: "Close",
+
+      confirmButtonColor: "#16a34a", // green
+      denyButtonColor: "#dc2626", // red
+      cancelButtonColor: "#6b7280",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //  Mark as DONE
+        updateMutation.mutate({
+          id: request._id,
+          status: "done",
+        });
+      } else if (result.isDenied) {
+        //  Mark as CANCEL
+        updateMutation.mutate({
+          id: request._id,
+          status: "cancel",
+        });
+      }
+    });
+  };
+
   if (loading || isLoading) {
     return (
       <div className="max-w-6xl mx-auto p-6">
@@ -46,13 +108,39 @@ const MyDonationRequest = () => {
     );
   }
 
-  if (isError) {
-    return (
-      <div className="max-w-6xl mx-auto p-6 text-center text-red-500">
-        Something went wrong while loading data.
-      </div>
-    );
-  }
+  // ================= Delete request =================
+
+  const handleDelete = (user) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteMutation.mutate(user._id, {
+          onSuccess: () => {
+            Swal.fire({
+              icon: "success",
+              title: `${user.name} deleted successfully`,
+              showConfirmButton: false,
+              timer: 1200,
+            });
+          },
+          onError: (err) => {
+            Swal.fire({
+              icon: "error",
+              title: "Failed to delete donation request",
+              text: err.response?.data?.message || err.message,
+            });
+          },
+        });
+      }
+    });
+  };
 
   if (requests.length === 0) {
     return (
@@ -65,79 +153,27 @@ const MyDonationRequest = () => {
     );
   }
 
-  // ==================== Render ====================
   return (
     <>
-      <h2 className="text-2xl font-semibold mb-6">
-        My Recent Donation Requests
-      </h2>
+      <DonationRequestTable
+        title="All Recent Donation Requests"
+        requests={requests}
+        totalPage={totalPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        onView={(request) => {
+          setSelectedRequest(request);
+          setIsModalOpen(true);
+        }}
+        onUpdate={(request) => handleUpdate(request)}
+        onDelete={(request) => handleDelete(request)}
+      />
 
-      <div className="overflow-x-auto min-h-70vh md:w-[880px] lg:w-[970px] p-6 bg-white dark:bg-gray-800 rounded-2xl shadow">
-        <table className="table table-xs table-pin-rows table-pin-cols table-zebra">
-          <thead>
-            <tr>
-              <th>Recipient</th>
-              <th>Address</th>
-              <th>Hospital</th>
-              <th>Blood</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Status</th>
-              <th>Message</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.map((request) => (
-              <tr key={request._id}>
-                <td className="whitespace-nowrap text-sm font-bold">
-                  {request.recipientName}
-                </td>
-                <td className="whitespace-nowrap text-xs">
-                  <div>{request.recipientDistrict}</div>
-                  <div>{request.recipientUpazila}</div>
-                </td>
-                <td className="whitespace-nowrap text-sm">
-                  {request.hospitalName}
-                </td>
-                <td className="whitespace-nowrap text-sm">
-                  {request.bloodGroup}
-                </td>
-                <td className="whitespace-nowrap text-sm">
-                  {request.donationDate}
-                </td>
-                <td className="whitespace-nowrap text-sm">
-                  {request.donationTime}
-                </td>
-                <td className="whitespace-nowrap text-sm">
-                  <span
-                    className={`badge ${
-                      request.status === "pending"
-                        ? "badge-warning"
-                        : request.status === "inprogress"
-                          ? "badge-info"
-                          : "badge-success"
-                    }`}
-                  >
-                    {request.status}
-                  </span>
-                </td>
-                <td className="max-w-xs truncate">{request.requestMessage}</td>
-                <th className="whitespace-nowrap text-sm">
-                  <button className="btn btn-ghost btn-xs">Details</button>
-                </th>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Pagination */}
-        <Pagination
-          totalPage={totalPage}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
-      </div>
+      <DonationDetailsModal
+        isOpen={isModalOpen}
+        request={selectedRequest}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 };

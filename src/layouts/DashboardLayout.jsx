@@ -47,7 +47,7 @@ const DashboardLayout = () => {
         {/* Overlay */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            className="fixed inset-0 bg-black/50 z-50 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
@@ -105,7 +105,7 @@ const DashboardLayout = () => {
         </aside>
 
         {/* MAIN */}
-        <div className="mb-4 mr-4 flex-1 flex flex-col overflow-hidden">
+        <div className="mb-4 mx-4 flex-1 flex flex-col overflow-hidden">
           {/* TOP NAV */}
           <header
             className="mt-4 flex items-center justify-between px-6 py-4

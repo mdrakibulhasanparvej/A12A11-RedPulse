@@ -1,4 +1,6 @@
+import { Link } from "react-router";
 import Pagination from "./Pagination";
+import useUser from "../../hooks/useUser";
 
 const DonationRequestTable = ({
   title = "All Recent Donation Requests",
@@ -10,6 +12,8 @@ const DonationRequestTable = ({
   onUpdate,
   onDelete,
 }) => {
+  const { userData: dbUser } = useUser();
+
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
@@ -24,11 +28,11 @@ const DonationRequestTable = ({
               <th>Recipient</th>
               <th>Address</th>
               <th>Hospital</th>
-              <th>Blood</th>
+              <th>Status</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Status</th>
-              <th>Message</th>
+              <th>Blood</th>
+              <th>Donor info</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -49,7 +53,9 @@ const DonationRequestTable = ({
                   <td>{index + 1}</td>
 
                   <td>
-                    <div className="font-bold">{request.recipientName}</div>
+                    <div className="font-bold whitespace-nowrap">
+                      {request.recipientName}
+                    </div>
                   </td>
 
                   <td className="text-sm">
@@ -57,52 +63,82 @@ const DonationRequestTable = ({
                     <div>{request.recipientUpazila}</div>
                   </td>
 
-                  <td>{request.hospitalName}</td>
-                  <td>{request.bloodGroup}</td>
-                  <td>{request.donationDate}</td>
-                  <td>{request.donationTime}</td>
-
+                  <td className="whitespace-nowrap">{request.hospitalName}</td>
+                  {/* status */}
                   <td>
                     <span
                       className={`badge ${
                         request.status === "pending"
-                          ? "badge-warning"
+                          ? "badge-warning text-white"
                           : request.status === "inprogress"
-                            ? "badge-info"
-                            : "badge-success"
+                            ? "badge-info text-white"
+                            : request.status === "done"
+                              ? "badge-success text-white "
+                              : "badge-error text-white "
                       }`}
                     >
                       {request.status}
                     </span>
                   </td>
 
-                  <td className="max-w-xs truncate">
-                    {request.requestMessage}
+                  <td className="whitespace-nowrap">{request.donationDate}</td>
+                  <td className="whitespace-nowrap">{request.donationTime}</td>
+
+                  <td>{request.bloodGroup}</td>
+
+                  <td className="max-w-xs whitespace-nowrap">
+                    <div>
+                      <div className="font-bold">{request.donorName}</div>
+                      <div className="text-sm opacity-60">
+                        {request.donorEmail}
+                      </div>
+                    </div>
                   </td>
 
                   <th className="flex flex-col space-y-1">
                     {onView && (
                       <button
                         onClick={() => onView(request)}
-                        className="btn btn-info btn-xs text-white"
+                        className="btn btn-warning btn-xs text-white"
                       >
                         View
                       </button>
                     )}
 
-                    {onUpdate && (
-                      <button
-                        onClick={() => onUpdate(request)}
-                        className="btn btn-warning btn-xs text-white"
-                      >
-                        Update
-                      </button>
-                    )}
+                    {dbUser.role === "donor" &&
+                      request.status === "pending" && (
+                        <Link
+                          to={`/dashboard/edit-donation-request/${request._id}`} // Pass request ID in URL
+                          className="btn btn-xs btn-accent"
+                        >
+                          Edit
+                        </Link>
+                      )}
 
-                    {onDelete && (
+                    {request.status === "inprogress" &&
+                      onUpdate &&
+                      dbUser.role === "donor" && (
+                        <button
+                          onClick={() => onUpdate(request)}
+                          className="btn btn-info btn-xs text-white"
+                          disabled={
+                            request.status === "done" ||
+                            request.status === "cancel"
+                          }
+                        >
+                          Done/Cancel
+                        </button>
+                      )}
+
+                    {onDelete && dbUser.role === "donor" && (
                       <button
                         onClick={() => onDelete(request)}
                         className="btn btn-error btn-xs text-white"
+                        disabled={
+                          request.status === "done" ||
+                          request.status === "cancel" ||
+                          request.status === "inprogress"
+                        }
                       >
                         Delete
                       </button>
@@ -119,11 +155,11 @@ const DonationRequestTable = ({
               <th>Recipient</th>
               <th>Address</th>
               <th>Hospital</th>
-              <th>Blood</th>
+              <th>Status</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Status</th>
-              <th>Message</th>
+              <th>Blood</th>
+              <th>Donor info</th>
               <th>Action</th>
             </tr>
           </tfoot>
