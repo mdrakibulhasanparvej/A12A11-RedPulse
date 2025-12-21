@@ -1,0 +1,26 @@
+[
+  {
+    "title1": "Donate Blood, ",
+    "title2": "Save Lives",
+    "title3": "Across",
+    "title4": "Bangladesh",
+    "description": "Join our blood donation network and help patients in need. Every drop counts — your donation can save up to three lives.",
+    "image_url": "/donation/donor-character-young-man-on-medical-chair.png"
+  },
+  {
+    "title1": "Find Blood ",
+    "title2": "Donors",
+    "title3": "Fast &",
+    "title4": "Easily",
+    "description": "Search verified blood donors near you in real time. Quick response, trusted volunteers, and life-saving connections.",
+    "image_url": "/banner/blood-donation-2.png"
+  },
+  {
+    "title1": "Emergency ",
+    "title2": "Blood",
+    "title3": "Requests",
+    "title4": "24/7",
+    "description": "Post urgent blood requests anytime. Get instant notifications and support from donors when it matters most.",
+    "image_url": "/banner/blood-donation-3.png"
+  }
+]

@@ -54,7 +54,7 @@ const AdminStatics = () => {
         { label: "Cancel", value: 0, bg: "bg-red-50" },
       ];
 
-    const total = donationData.totalRequests || 0;
+    const totaldonatinReq = donationData.totalRequests || 0;
 
     const pending = donationData.requests.filter(
       (r) => r.status === "pending"
@@ -69,7 +69,9 @@ const AdminStatics = () => {
       (r) => r.status === "cancel"
     ).length;
 
-    const totalUser = usersData?.users?.length || 0;
+    // console.log(usersData);
+
+    const totalUser = usersData?.totalUsers || 0;
 
     const activeUser = usersData?.users.filter(
       (a) => a.status === "active"
@@ -84,7 +86,7 @@ const AdminStatics = () => {
       { label: "Total Users", value: totalUser, bg: "bg-yellow-50" },
       { label: "Total Active Users", value: activeUser, bg: "bg-green-50" },
       { label: "Total Blocked Users", value: blockedUser, bg: "bg-red-50" },
-      { label: "Total Requests", value: total, bg: "bg-yellow-50" },
+      { label: "Total Requests", value: totaldonatinReq, bg: "bg-yellow-50" },
       { label: "Pending", value: pending, bg: "bg-orange-50" },
       { label: "In Progress", value: inProgress, bg: "bg-blue-50" },
       { label: "Completed", value: completed, bg: "bg-green-50" },

@@ -18,7 +18,9 @@ import AllDonationRequest from "../pages/PublicPage/AllDonationRequest";
 import DonationRequestDetails from "../pages/Dashboard/Donner/DonationRequestDetails";
 import Search from "../pages/PublicPage/Search";
 import EditDonationRequest from "../pages/Dashboard/Donner/EditDonationRequest";
-import Funding from "../pages/PublicPage/Funding";
+import Funding from "../pages/Dashboard/Donner/Funding";
+import PaymentSuccess from "../pages/Dashboard/Donner/PaymentSuccess";
+import PaymentCancel from "../pages/Dashboard/Donner/PaymentCancel";
 
 // lazy loaded pages
 const Allusers = lazy(() => import("../pages/Dashboard/Admin/Allusers"));
@@ -46,7 +48,7 @@ const router = createBrowserRouter([
         Component: Search,
       },
       {
-        path: "funding",
+        path: "funding/:email",
         Component: Funding,
       },
       {
@@ -105,7 +107,15 @@ const router = createBrowserRouter([
       },
       {
         path: "edit-donation-request/:id",
-        element: <EditDonationRequest />, // ✅ use element
+        element: <EditDonationRequest />, //  use element
+      },
+      {
+        path: "payment-success",
+        Component: PaymentSuccess,
+      },
+      {
+        path: "payment-cenceled",
+        Component: PaymentCancel,
       },
     ],
   },

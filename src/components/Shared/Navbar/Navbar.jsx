@@ -57,15 +57,14 @@ const Navbar = () => {
       <li>
         <MyLinks to="/">Home</MyLinks>
       </li>
-      {/* <li>
-        <MyLinks to="/aboutus">About Us</MyLinks>
-      </li> */}
       <li>
         <MyLinks to="/donation-request">Donation Request</MyLinks>
       </li>
-      <li>
-        <MyLinks to="/funding">Funding</MyLinks>
-      </li>
+      {user && (
+        <li>
+          <MyLinks to={`/funding/${user.email}`}>Donate Fund</MyLinks>
+        </li>
+      )}
     </>
   );
   const links2 = (
