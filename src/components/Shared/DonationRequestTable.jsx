@@ -3,7 +3,7 @@ import Pagination from "./Pagination";
 import useUser from "../../hooks/useUser";
 
 const DonationRequestTable = ({
-  title = "All Recent Donation Requests",
+  title = "write title here",
   requests = [],
   totalPage = 0,
   currentPage,
@@ -20,7 +20,7 @@ const DonationRequestTable = ({
         {title}
       </h2>
 
-      <div className="overflow-x-auto min-h-[70vh] w-full p-3 bg-white dark:bg-gray-800 border border-gray-300 rounded-xl shadow-sm transition-colors">
+      <div className="overflow-x-auto overflow-y-auto min-h-[70vh] w-full p-3 bg-white dark:bg-gray-800 border border-gray-300 rounded-xl shadow-sm transition-colors">
         <table className="table table-zebra table-pin-rows table-pin-cols w-full text-gray-900 dark:text-gray-100">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-700">
@@ -167,14 +167,16 @@ const DonationRequestTable = ({
         </table>
       </div>
 
-      {/* Pagination */}
-      {totalPage > 0 && (
-        <Pagination
-          totalPage={totalPage}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
-      )}
+      <div className="mt-5">
+        {/* Pagination */}
+        {totalPage > 0 && (
+          <Pagination
+            totalPage={totalPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
+      </div>
     </div>
   );
 };

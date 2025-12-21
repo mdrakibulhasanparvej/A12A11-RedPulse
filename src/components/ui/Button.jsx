@@ -4,55 +4,43 @@ const Button = ({
   label,
   onClick,
   glass,
-  disabled,
+  disabled = false,
+  loading = false,
   outline,
   small,
   icon: Icon,
   size,
 }) => {
+  const isDisabled = disabled || loading;
+
   return (
     <motion.button
-      disabled={disabled}
+      type="submit"
+      disabled={isDisabled}
       onClick={onClick}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={!isDisabled ? { scale: 1.01 } : {}}
+      whileTap={!isDisabled ? { scale: 0.95 } : {}}
       className={`
-          relative
-          disabled:opacity-70
-          disabled:cursor-not-allowed
-          rounded-lg
-          hover:opacity-80
-          transition
-          cursor-pointer
-          px-4
-          ${size ? "w-full" : ""}
-          ${outline ? "bg-white" : "bg-lime-500"}
-          ${outline ? "border-black" : "border-pink-700"}
-          ${outline ? "text-black" : "text-white"}
-          ${small ? "text-sm" : "text-md"}
-          ${small ? "py-1" : "py-3"}
-          ${small ? "font-light" : "font-semibold"}
-          ${small ? "border" : "border-2"}
-          ${
-            glass
-              ? "bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30  shadow-xl px-10 text-xl"
-              : outline
-                ? "bg-white border-2 border-black text-black hover:opacity-80"
-                : "bg-linear-to-r from-[#B32346] to-[#6A0B37] border-2 text-white hover:opacity-90 shadow-md  px-10 text-xl"
-          }
-        `}
+        relative
+        rounded-lg
+        transition
+        px-4
+        ${size ? "w-full" : ""}
+        ${isDisabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer hover:opacity-80"}
+        ${outline ? "bg-white border-black text-black" : "bg-lime-500 border-pink-700 text-white"}
+        ${small ? "text-sm py-1 font-light border" : "text-md py-3 font-semibold border-2"}
+        ${
+          glass
+            ? "bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 shadow-xl px-10 text-xl"
+            : outline
+              ? "bg-white border-2 border-black text-black"
+              : "bg-linear-to-r from-[#B32346] to-[#6A0B37] border-2 text-white shadow-md px-10 text-xl"
+        }
+      `}
     >
-      {Icon && (
-        <Icon
-          size={24}
-          className="
-              absolute
-              left-4
-              top-3
-            "
-        />
-      )}
-      {label}
+      {Icon && <Icon size={24} className="absolute left-4 top-3" />}
+
+      {loading ? "Please wait..." : label}
     </motion.button>
   );
 };

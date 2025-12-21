@@ -315,7 +315,12 @@ const Register = () => {
 
             {/* Footer */}
             <div className="md:col-span-2 flex flex-col gap-4">
-              <Button type="submit" label="Register" loading={isRegistering} />
+              <Button
+                type="submit"
+                label="Register"
+                loading={isRegistering}
+                disabled={isRegistering}
+              />
 
               <p className="text-sm">
                 Already have an Account?{" "}
