@@ -9,6 +9,7 @@ const Statistics = () => {
     <div>
       {dbUser?.role === "donor" && <BlodDonnerStatics dbUser={dbUser} />}
       {dbUser?.role === "admin" && <AdminStatics dbUser={dbUser} />}
+      {dbUser?.role === "volunteer" && <AdminStatics dbUser={dbUser} />}
     </div>
   );
 };

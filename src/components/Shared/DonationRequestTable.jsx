@@ -95,6 +95,7 @@ const DonationRequestTable = ({
                     </div>
                   </td>
 
+                  {/* Actions */}
                   <th className="flex flex-col space-y-1">
                     {onView && (
                       <button
@@ -117,7 +118,7 @@ const DonationRequestTable = ({
 
                     {request.status === "inprogress" &&
                       onUpdate &&
-                      dbUser.role === "donor" && (
+                      ["donor", "admin", "voluntee"].includes(dbUser.role) && (
                         <button
                           onClick={() => onUpdate(request)}
                           className="btn btn-info btn-xs text-white"

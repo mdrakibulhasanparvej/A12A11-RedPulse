@@ -1,8 +1,17 @@
+import { BiDonateBlood } from "react-icons/bi";
+import { FaUserCog } from "react-icons/fa";
+import MenuItem from "./MenuItem";
+
 const VolunteerMenu = () => {
   return (
-    <p className="px-4 py-2 text-sm text-gray-500">
-      Volunteer menu coming soon
-    </p>
+    <>
+      <MenuItem
+        icon={BiDonateBlood}
+        label="All Blood Requests"
+        address="all-blood-donation-request"
+      />
+      <MenuItem icon={FaUserCog} label="Profile" address="profile" />
+    </>
   );
 };
 
