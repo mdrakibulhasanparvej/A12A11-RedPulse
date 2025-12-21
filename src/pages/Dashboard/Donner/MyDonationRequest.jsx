@@ -7,8 +7,11 @@ import { useState } from "react";
 import DonationRequestTable from "../../../components/Shared/DonationRequestTable";
 import DonationDetailsModal from "../../../components/Modal/DonationDetailsModal";
 import Swal from "sweetalert2";
+import useTitle from "../../../hooks/useTitle";
 
 const MyDonationRequest = () => {
+  useTitle("My Donation Request");
+
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();

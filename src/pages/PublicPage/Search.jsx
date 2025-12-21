@@ -6,10 +6,13 @@ import useAuth from "../../hooks/useAuth";
 import Container from "../../components/ui/Container";
 import useDistrictUpazila from "../../hooks/useDistrictUpazila";
 import Pagination from "../../components/Shared/Pagination";
+import useTitle from "../../hooks/useTitle";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const Search = () => {
+  useTitle("Search");
+
   const axiosPublic = useAxiosSecure();
   const { user } = useAuth();
   const navigate = useNavigate();

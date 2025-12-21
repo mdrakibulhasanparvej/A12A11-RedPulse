@@ -6,8 +6,11 @@ import useAuth from "../../hooks/useAuth";
 import Container from "../../components/ui/Container";
 import { useState } from "react";
 import Pagination from "../../components/Shared/Pagination";
+import useTitle from "../../hooks/useTitle";
 
 const AllDonationRequest = () => {
+  useTitle("Donation Request");
+
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const navigate = useNavigate();

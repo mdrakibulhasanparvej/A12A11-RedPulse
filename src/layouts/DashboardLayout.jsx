@@ -21,8 +21,11 @@ import SidebarSkeleton from "../components/ui/Loading/Sidebar only/SidebarSkelet
 // Avatar
 import avatarImg from "../assets/avater.jpg";
 import logo from "../assets/Logo.png";
+import useTitle from "../hooks/useTitle";
 
 const DashboardLayout = () => {
+  useTitle("Dashboard");
+
   const { user, logOut } = useAuth();
   const { userData: dbUser, isLoading } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);

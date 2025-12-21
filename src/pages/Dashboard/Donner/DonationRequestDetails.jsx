@@ -5,8 +5,11 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import Container from "../../../components/ui/Container";
 import Swal from "sweetalert2";
+import useTitle from "../../../hooks/useTitle";
 
 const DonationRequestDetails = () => {
+  useTitle("Donation Request Details ");
+
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();

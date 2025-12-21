@@ -8,8 +8,11 @@ import toast from "react-hot-toast";
 import Button from "../../../components/ui/Button";
 import useUser from "../../../hooks/useUser";
 import AccessRestricted from "../../ErrorPages/AccessRestricted";
+import useTitle from "../../../hooks/useTitle";
 
 const CreateDonationRequest = () => {
+  useTitle("Create Donation Request");
+
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();

@@ -5,8 +5,11 @@ import AllusersTableRow from "../../../components/ui/Loading/ManageUsers/Alluser
 import Swal from "sweetalert2";
 import { FaFilter } from "react-icons/fa";
 import Pagination from "../../../components/Shared/Pagination";
+import useTitle from "../../../hooks/useTitle";
 
 const Allusers = () => {
+  useTitle("All Users");
+
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState("");

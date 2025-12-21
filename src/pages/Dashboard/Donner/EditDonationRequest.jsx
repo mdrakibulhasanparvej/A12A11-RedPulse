@@ -9,8 +9,11 @@ import useBDLocation from "../../../hooks/useBDLocation";
 import Button from "../../../components/ui/Button";
 import AccessRestricted from "../../ErrorPages/AccessRestricted";
 import useUser from "../../../hooks/useUser";
+import useTitle from "../../../hooks/useTitle";
 
 const EditDonationRequest = () => {
+  useTitle("Edit Donation Request");
+
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();

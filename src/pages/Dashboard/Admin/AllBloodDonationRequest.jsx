@@ -7,8 +7,11 @@ import DonationRequestTable from "../../../components/Shared/DonationRequestTabl
 import DonationDetailsModal from "../../../components/Modal/DonationDetailsModal";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import useTitle from "../../../hooks/useTitle";
 
 const AllBloodDonationRequest = () => {
+  useTitle("All Blood Donation Request");
+
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();

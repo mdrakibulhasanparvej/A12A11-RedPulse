@@ -9,8 +9,11 @@ import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 import ProfileSkeleton from "../../../components/ui/Loading/Profile/ProfileSkeleton";
 import useBDLocation from "../../../hooks/useBDLocation";
+import useTitle from "../../../hooks/useTitle";
 
 const Profile = () => {
+  useTitle("Profile");
+
   const { userData: dbUser, isLoading, refetch } = useUser();
   const axiosSecure = useAxiosSecure();
   const { user: firebaseUser, updateUserProfile } = useAuth();
