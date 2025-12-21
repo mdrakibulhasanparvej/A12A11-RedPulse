@@ -14,13 +14,13 @@ const StatisticsCard = ({ title, userName, stats }) => {
           overview of your activity.
         </p>
       )}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
+      <div className="">
         {/* Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((item, index) => (
             <div
               key={index}
-              className={`p-4 rounded-xl ${item.bg} dark:bg-gray-700 shadow-md`}
+              className={`p-4 rounded-xl bg-white dark:bg-gray-700 shadow-md`}
             >
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {item.label}
