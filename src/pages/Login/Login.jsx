@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/Button";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import { TiHome } from "react-icons/ti";
 
 const Login = () => {
   const {
@@ -103,6 +104,14 @@ const Login = () => {
             Register
           </Link>
         </p>
+        <div className="text-center flex items-center justify-center mt-8">
+          <Link
+            to="/"
+            className="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition"
+          >
+            <TiHome size={30} />
+          </Link>
+        </div>
       </div>
     </div>
   );

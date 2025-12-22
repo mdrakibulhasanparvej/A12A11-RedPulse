@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import axios from "axios";
 import Button from "../../components/ui/Button";
-import { CgArrowRightO } from "react-icons/cg";
+import { TiHome } from "react-icons/ti";
 // import Navbar from "../../components/Shared/Navbar/Navbar";
 // import Footer from "../../components/Shared/Footer/Footer";
 import toast from "react-hot-toast";
@@ -137,7 +137,7 @@ const Register = () => {
           <form
             onSubmit={handleSubmit(handleRegistration)}
             encType="multipart/form-data"
-            className="p-6 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="p-6 md:p-10 md:pb-4 grid grid-cols-1 md:grid-cols-2 gap-6"
           >
             {/* Avatar */}
             <div className="md:col-span-2">
@@ -324,12 +324,23 @@ const Register = () => {
 
               <p className="text-sm">
                 Already have an Account?{" "}
-                <Link to="/login" className="link link-hover font-semibold">
+                <Link
+                  to="/login"
+                  className="text-red-600 hover:underline font-medium"
+                >
                   Login
                 </Link>
               </p>
             </div>
           </form>
+          <div className="text-center flex items-center justify-center mb-8">
+            <Link
+              to="/"
+              className="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition"
+            >
+              <TiHome size={30} />
+            </Link>
+          </div>
         </div>
       </div>
     </>
