@@ -25,14 +25,25 @@ const AllBloodDonationRequest = () => {
   const limit = 10;
   const skip = currentPage * limit;
 
+  // ================= filtering accorfing to status =================
+  const [statusFilter, setStatusFilter] = useState("");
+
   // ================= Fetch Data =================
   const { data, isLoading } = useQuery({
-    queryKey: ["pending-donation-requests", user?.email, skip, limit],
+    queryKey: [
+      "pending-donation-requests",
+      user?.email,
+      skip,
+      limit,
+      statusFilter,
+    ],
+
     enabled: !!user?.email && !loading,
-    queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/donation-request-all?limit=${limit}&skip=${skip}`
-      );
+    queryFn: async ({ queryKey }) => {
+      const [_key] = queryKey;
+      let url = `/donation-request-all?limit=${limit}&skip=${skip}`;
+      if (statusFilter) url += `&status=${statusFilter}`;
+      const res = await axiosSecure.get(url);
       return res.data;
     },
     onError: () => {
@@ -165,6 +176,8 @@ const AllBloodDonationRequest = () => {
         totalPage={totalPage}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
         onView={(request) => {
           setSelectedRequest(request);
           setIsModalOpen(true);

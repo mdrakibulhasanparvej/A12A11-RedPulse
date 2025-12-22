@@ -5,24 +5,38 @@ import toast from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/ui/Loading/LoadingSpinner";
 import PaymentHistoryTable from "../../../components/Shared/PaymentHistoryTable";
+import useAuth from "../../../hooks/useAuth";
+import useUser from "../../../hooks/useUser";
 
 const PaymentHistory = () => {
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
+  const { userData: dbUser } = useUser();
+
+  console.log(dbUser);
+
+  // Query Conditionally
+  const isAdmin = dbUser?.role === "admin" || dbUser?.role === "volunteer";
+
+  const queryEmail = isAdmin ? "" : user?.email;
+
+  console.log(queryEmail);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(0);
   const limit = 10;
   const skip = currentPage * limit;
 
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["payment-history", currentPage],
+  // API Based on Role
+  const { data, isLoading, refetch, isError } = useQuery({
+    queryKey: ["payment-history", queryEmail, currentPage],
+    enabled: !!dbUser,
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/donation-payment-info?skip=${skip}&limit=${limit}`
+        `/donation-payment-info?skip=${skip}&limit=${limit}&email=${queryEmail}`
       );
       return res.data;
     },
-    keepPreviousData: true,
   });
 
   const handleDelete = async (payment) => {

@@ -1,6 +1,6 @@
 import React from "react";
 import MenuItem from "./MenuItem";
-import { FaUserCog } from "react-icons/fa";
+import { FaPaypal, FaUserCog } from "react-icons/fa";
 
 const BloodDonnnerMunu = () => {
   return (
@@ -14,6 +14,11 @@ const BloodDonnnerMunu = () => {
         icon={FaUserCog}
         label="Create Donation Req"
         address="create-donation-request"
+      />
+      <MenuItem
+        icon={FaPaypal}
+        label={"Payment History"}
+        address={"payment-history"}
       />
       <MenuItem icon={FaUserCog} label="Profile" address="profile" />
     </div>

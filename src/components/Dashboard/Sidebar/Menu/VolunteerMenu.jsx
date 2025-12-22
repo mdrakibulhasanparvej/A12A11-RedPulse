@@ -1,5 +1,5 @@
 import { BiDonateBlood } from "react-icons/bi";
-import { FaUserCog } from "react-icons/fa";
+import { FaPaypal, FaUserCog } from "react-icons/fa";
 import MenuItem from "./MenuItem";
 
 const VolunteerMenu = () => {
@@ -9,6 +9,11 @@ const VolunteerMenu = () => {
         icon={BiDonateBlood}
         label="All Blood Requests"
         address="all-blood-donation-request"
+      />
+      <MenuItem
+        icon={FaPaypal}
+        label={"Payment History"}
+        address={"payment-history"}
       />
       <MenuItem icon={FaUserCog} label="Profile" address="profile" />
     </>

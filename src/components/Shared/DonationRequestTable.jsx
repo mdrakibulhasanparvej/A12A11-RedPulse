@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import Pagination from "./Pagination";
 import useUser from "../../hooks/useUser";
+import { FaFilter } from "react-icons/fa";
 
 const DonationRequestTable = ({
   title = "write title here",
@@ -8,6 +9,8 @@ const DonationRequestTable = ({
   totalPage = 0,
   currentPage,
   setCurrentPage,
+  setStatusFilter,
+  statusFilter,
   onView,
   onUpdate,
   onDelete,
@@ -20,7 +23,7 @@ const DonationRequestTable = ({
         {title}
       </h2>
 
-      <div className="overflow-x-auto overflow-y-auto min-h-[70vh] w-full p-3 bg-white dark:bg-gray-800 border border-gray-300 rounded-xl shadow-sm transition-colors">
+      <div className="overflow-x-auto overflow-y-visible min-h-[70vh] w-full p-3 bg-white dark:bg-gray-800 border border-gray-300 rounded-xl shadow-sm transition-colors">
         <table className="table table-zebra table-pin-rows table-pin-cols w-full text-gray-900 dark:text-gray-100">
           <thead>
             <tr className="bg-gray-100 dark:bg-gray-700">
@@ -28,7 +31,105 @@ const DonationRequestTable = ({
               <th>Recipient</th>
               <th>Address</th>
               <th>Hospital</th>
-              <th>Status</th>
+              <th>
+                Status{" "}
+                <div className="dropdown mt-1">
+                  <label
+                    tabIndex={0}
+                    className="btn btn-xs m-1 flex items-center gap-1"
+                  >
+                    <FaFilter />
+                    {statusFilter && (
+                      <span className="ml-1 px-2 py-0.5 rounded text-xs font-semibold ">
+                        {statusFilter.charAt(0).toUpperCase() +
+                          statusFilter.slice(1)}
+                      </span>
+                    )}
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-9999 absolute menu p-2 shadow bg-base-100 rounded-box w-32"
+                  >
+                    <li>
+                      <button
+                        className={
+                          statusFilter === "pending"
+                            ? "font-bold text-yellow-600"
+                            : ""
+                        }
+                        onClick={() => {
+                          setCurrentPage(0);
+                          setStatusFilter("pending");
+                        }}
+                      >
+                        Pending
+                      </button>
+                    </li>
+
+                    <li>
+                      <button
+                        className={
+                          statusFilter === "inprogress"
+                            ? "font-bold text-blue-600"
+                            : ""
+                        }
+                        onClick={() => {
+                          setCurrentPage(0);
+                          setStatusFilter("inprogress");
+                        }}
+                      >
+                        In Progress
+                      </button>
+                    </li>
+
+                    <li>
+                      <button
+                        className={
+                          statusFilter === "done"
+                            ? "font-bold text-green-600"
+                            : ""
+                        }
+                        onClick={() => {
+                          setCurrentPage(0);
+                          setStatusFilter("done");
+                        }}
+                      >
+                        Done
+                      </button>
+                    </li>
+
+                    <li>
+                      <button
+                        className={
+                          statusFilter === "cancel"
+                            ? "font-bold text-red-600"
+                            : ""
+                        }
+                        onClick={() => {
+                          setCurrentPage(0);
+                          setStatusFilter("cancel");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </li>
+
+                    <li>
+                      <button
+                        className={
+                          !statusFilter ? "font-bold text-gray-700" : ""
+                        }
+                        onClick={() => {
+                          setCurrentPage(0);
+                          setStatusFilter("");
+                        }}
+                      >
+                        All
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </th>
               <th>Date</th>
               <th>Time</th>
               <th>Blood</th>
@@ -118,7 +219,7 @@ const DonationRequestTable = ({
 
                     {request.status === "inprogress" &&
                       onUpdate &&
-                      ["donor", "admin", "voluntee"].includes(dbUser.role) && (
+                      ["admin", "volunteer"].includes(dbUser.role) && (
                         <button
                           onClick={() => onUpdate(request)}
                           className="btn btn-info btn-xs text-white"

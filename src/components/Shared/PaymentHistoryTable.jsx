@@ -56,7 +56,7 @@ const PaymentHistoryTable = ({
                   <td className="whitespace-nowrap">{payment.email}</td>
 
                   <td className="font-semibold text-green-600">
-                    ৳{payment.amount}
+                    {payment.amount}৳
                   </td>
                   <td>
                     <span className="badge badge-success text-white">

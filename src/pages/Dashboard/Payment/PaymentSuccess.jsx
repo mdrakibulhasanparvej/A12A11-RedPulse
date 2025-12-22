@@ -79,10 +79,10 @@ const PaymentSuccess = () => {
 
         {user && (
           <Link
-            to="/dashboard"
+            to="/dashboard/payment-history"
             className="btn w-full bg-linear-to-r from-[#6A0B37] to-[#B32346] text-white"
           >
-            Go to Dashboard
+            Payment History
           </Link>
         )}
       </div>

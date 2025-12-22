@@ -6,12 +6,17 @@ import toast from "react-hot-toast";
 import Welcome from "../../../pages/Dashboard/Welcome";
 import { Link } from "react-router";
 import StatisticsCard from "../../Shared/StatisticsCard";
+import useUser from "../../../hooks/useUser";
 
 const AdminStatics = () => {
   const { user } = useAuth();
+  const { userData: dbUser } = useUser();
   const axiosSecure = useAxiosSecure();
 
-  // Fetch Donation Requests
+  const isVolunteer =
+    dbUser?.role === "volunteer" && user?.email === dbUser?.email;
+
+  // ============ Fetch Donation Requests ===========
   const {
     data: donationData,
     isLoading: donationsLoading,
@@ -25,7 +30,7 @@ const AdminStatics = () => {
     onError: () => toast.error("Failed to fetch donation requests"),
   });
 
-  // Fetch Users
+  // =============== Fetch Users ===========================
   const {
     data: usersData,
     isLoading: usersLoading,
@@ -39,6 +44,20 @@ const AdminStatics = () => {
     onError: () => toast.error("Failed to fetch users"),
   });
   // console.log(donationData);
+
+  // ============ Fetch Donation Payments ==============
+  const {
+    data: paymentsData,
+    isLoading: paymentsLoading,
+    isError: paymentsError,
+  } = useQuery({
+    queryKey: ["donation-payments"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/donation-payment-info");
+      return res.data;
+    },
+    onError: () => toast.error("Failed to fetch donation payments"),
+  });
 
   // Compute Stats
   const donorStats = React.useMemo(() => {
@@ -108,13 +127,35 @@ const AdminStatics = () => {
       .slice(0, 4);
   }, [usersData]);
 
+  const donationStats = React.useMemo(() => {
+    if (!paymentsData || !paymentsData.donations)
+      return [
+        { label: "Total Donations", value: 0, bg: "bg-blue-50" },
+        { label: "Total Amount (BDT)", value: 0, bg: "bg-green-50" },
+      ];
+
+    const totalDonations = paymentsData.donations.length;
+    const totalAmount = paymentsData.donations.reduce(
+      (sum, item) => sum + (item.amount || 0),
+      0
+    );
+
+    return [
+      { label: "Total Donations", value: totalDonations, bg: "bg-blue-50" },
+      { label: "Total Amount (BDT)", value: totalAmount, bg: "bg-green-50" },
+    ];
+  }, [paymentsData]);
+
+  const finalStats = React.useMemo(() => {
+    return [...donorStats, ...donationStats];
+  }, [donorStats, donationStats]);
+
   // Loading state
-  if (donationsLoading || usersLoading) {
+  if (donationsLoading || usersLoading || paymentsLoading) {
     return <p className="text-center text-gray-500 mt-6">Loading...</p>;
   }
 
-  // Error state
-  if (donationsError || usersError) {
+  if (donationsError || usersError || paymentsError) {
     return <p className="text-center text-red-500 mt-6">Failed to load data</p>;
   }
 
@@ -125,9 +166,9 @@ const AdminStatics = () => {
       <Welcome />
       {/* Admin Stats */}
       <StatisticsCard
-        title="Admin Statistics"
+        title={isVolunteer ? "Volunteer Statistics" : "Admin Statistics"}
         userName={user?.displayName || "Admin"}
-        stats={donorStats}
+        stats={finalStats}
       />
 
       {/* New Users + Recent Orders */}
@@ -137,7 +178,7 @@ const AdminStatics = () => {
       <div className="flex flex-col gap-6 mt-6">
         {/* New Users */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {newUsers.map((userItem, i) => (
               <div key={i} className="text-center">
                 <div
