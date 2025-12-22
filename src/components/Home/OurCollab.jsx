@@ -4,16 +4,16 @@ import Container from "../ui/Container";
 
 // Example hospital logos (replace with real images)
 const collaborators = [
-  { name: "Apollo Hospital", logo: "/hospitals/apollo.png" },
-  { name: "Square Hospital", logo: "/hospitals/square.png" },
-  { name: "United Hospital", logo: "/hospitals/united.png" },
-  { name: "Labaid Hospital", logo: "/hospitals/labaid.png" },
-  { name: "Evercare Hospital", logo: "/hospitals/evercare.png" },
-  { name: "Popular Diagnostic", logo: "/hospitals/popular.png" },
-  { name: "IBN Sina", logo: "/hospitals/ibnsina.png" },
-  { name: "Medinova", logo: "/hospitals/medinova.png" },
-  { name: "Bangladesh Medical", logo: "/hospitals/bmch.png" },
-  { name: "CMH", logo: "/hospitals/cmh.png" },
+  { name: "Apollo Hospital", logo: "/hospitals/Apollo Hospital.jpg" },
+  { name: "Square Hospital", logo: "/hospitals/Square Hospital.png" },
+  { name: "United Hospital", logo: "/hospitals/United Hospital.png" },
+  { name: "Labaid Hospital", logo: "/hospitals/Labaid Hospital.jpg" },
+  { name: "Evercare Hospital", logo: "/hospitals/Evercare Hospital.png" },
+  { name: "Popular Diagnostic", logo: "/hospitals/Popular Diagnostic.png" },
+  { name: "IBN Sina", logo: "/hospitals/IBN Sina.png" },
+  { name: "Medinova", logo: "/hospitals/Medinova.jpg" },
+  { name: "Bangladesh Medical", logo: "/hospitals/Bangladesh Medical.jpg" },
+  { name: "CMH", logo: "/hospitals/CMH.jpg" },
 ];
 
 const OurCollab = () => {
