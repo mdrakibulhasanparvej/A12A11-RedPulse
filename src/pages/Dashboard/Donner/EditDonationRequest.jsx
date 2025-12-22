@@ -178,7 +178,7 @@ const EditDonationRequest = () => {
             <input
               readOnly
               value={user?.displayName || ""}
-              className="input input-bordered w-full bg-gray-100"
+              className="input input-bordered w-full bg-gray-100 dark:bg-gray-900"
             />
           </div>
           <div>
@@ -186,7 +186,7 @@ const EditDonationRequest = () => {
             <input
               readOnly
               value={user?.email || ""}
-              className="input input-bordered w-full bg-gray-100"
+              className="input input-bordered w-full bg-gray-100 dark:bg-gray-900"
             />
           </div>
 

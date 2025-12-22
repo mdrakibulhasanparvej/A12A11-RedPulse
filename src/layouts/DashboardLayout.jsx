@@ -58,7 +58,7 @@ const DashboardLayout = () => {
         {/* SIDEBAR */}
         <aside
           className={`fixed lg:static inset-y-0 left-0 z-50 w-64
-          transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full -m-4"}
           lg:translate-x-0 transition-transform duration-300
           bg-white dark:bg-gray-800 
           flex flex-col m-4 rounded-xl`}

@@ -66,7 +66,8 @@ const MyDonationRequest = () => {
       const res = await axiosSecure.delete(`/donation-request-all/${id}`);
       return res.data;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["my-donation-requests"] }),
   });
 
   const handleUpdate = (request) => {

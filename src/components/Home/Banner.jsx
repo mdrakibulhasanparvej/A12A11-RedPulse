@@ -7,8 +7,10 @@ import { Autoplay, EffectFade } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
+import useAuth from "../../hooks/useAuth";
 
 const Banner = () => {
+  const { user } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,12 +65,15 @@ const Banner = () => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                          <Link
-                            to="register"
-                            className="btn bg-linear-to-r from-[#6A0B37] to-[#B32346] text-white px-6 py-3 text-center"
-                          >
-                            Join as Donor
-                          </Link>
+                          {!user && (
+                            <Link
+                              to="register"
+                              className="btn bg-linear-to-r from-[#6A0B37] to-[#B32346] text-white px-6 py-3 text-center"
+                            >
+                              Join as Donor
+                            </Link>
+                          )}
+
                           <Link
                             to="/search"
                             className="btn bg-linear-to-r from-[#6A0B37] to-[#B32346] text-white px-6 py-3 text-center"
