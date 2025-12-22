@@ -7,20 +7,22 @@ import LoadingSpinner from "../../../components/ui/Loading/LoadingSpinner";
 import PaymentHistoryTable from "../../../components/Shared/PaymentHistoryTable";
 import useAuth from "../../../hooks/useAuth";
 import useUser from "../../../hooks/useUser";
+import useTitle from "../../../hooks/useTitle";
 
 const PaymentHistory = () => {
+  useTitle("Payment History");
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const { userData: dbUser } = useUser();
 
-  console.log(dbUser);
+  // console.log(dbUser);
 
   // Query Conditionally
   const isAdmin = dbUser?.role === "admin" || dbUser?.role === "volunteer";
 
   const queryEmail = isAdmin ? "" : user?.email;
 
-  console.log(queryEmail);
+  // console.log(queryEmail);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(0);

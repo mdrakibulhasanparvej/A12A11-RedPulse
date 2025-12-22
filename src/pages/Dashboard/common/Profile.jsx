@@ -10,6 +10,7 @@ import useAuth from "../../../hooks/useAuth";
 import ProfileSkeleton from "../../../components/ui/Loading/Profile/ProfileSkeleton";
 import useBDLocation from "../../../hooks/useBDLocation";
 import useTitle from "../../../hooks/useTitle";
+import Button from "../../../components/ui/Button";
 
 const Profile = () => {
   useTitle("Profile");
@@ -18,6 +19,7 @@ const Profile = () => {
   const axiosSecure = useAxiosSecure();
   const { user: firebaseUser, updateUserProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const {
     register,
@@ -75,6 +77,8 @@ const Profile = () => {
   // Update profile mutation
   const updateUserMutation = useMutation({
     mutationFn: async (data) => {
+      setIsRegistering(true);
+
       if (!firebaseUser?.email) throw new Error("User not logged in");
 
       let photoURL = dbUser?.avatar || "";
@@ -116,6 +120,9 @@ const Profile = () => {
     onError: (err) => {
       console.error(err);
       toast.error(err.message || "Failed to update profile");
+    },
+    onSettled: () => {
+      setIsRegistering(false);
     },
   });
 
@@ -345,15 +352,12 @@ const Profile = () => {
 
             {/* Submit */}
             <div className="md:col-span-2 flex justify-end mt-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <Button
                 type="submit"
-                className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                disabled={updateUserMutation.isLoading}
-              >
-                {updateUserMutation.isLoading ? "Saving..." : "Save Changes"}
-              </motion.button>
+                label="Save"
+                loading={isRegistering}
+                disabled={isRegistering}
+              />
             </div>
           </form>
         )}

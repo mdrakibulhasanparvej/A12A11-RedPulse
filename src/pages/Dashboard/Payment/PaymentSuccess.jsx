@@ -3,8 +3,11 @@ import { Link, useLocation } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useTitle from "../../../hooks/useTitle";
 
 const PaymentSuccess = () => {
+  useTitle("Payment Success");
+
   const { user } = useAuth();
   const location = useLocation();
   const axiosSecure = useAxiosSecure();

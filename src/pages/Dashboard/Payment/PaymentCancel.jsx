@@ -2,8 +2,10 @@ import { MdCancel } from "react-icons/md";
 import { FaRedoAlt } from "react-icons/fa";
 import { Link } from "react-router";
 import useAuth from "../../../hooks/useAuth";
+import useTitle from "../../../hooks/useTitle";
 
 const PaymentCancel = () => {
+  useTitle("Payment Cancel");
   const { user } = useAuth();
 
   return (
