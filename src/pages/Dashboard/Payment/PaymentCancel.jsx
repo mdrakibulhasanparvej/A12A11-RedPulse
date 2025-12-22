@@ -30,7 +30,7 @@ const PaymentCancel = () => {
             to={`/funding/${user.email}`}
             className="btn w-full bg-linear-to-r from-[#6A0B37] to-[#B32346] text-white flex items-center justify-center gap-2"
           >
-            <FaRedoAlt /> 
+            <FaRedoAlt />
             Try Again
           </Link>
         )}

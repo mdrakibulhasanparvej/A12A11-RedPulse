@@ -3,9 +3,9 @@ import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
+import useTitle from "../../../hooks/useTitle";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/ui/Loading/LoadingSpinner";
-import useTitle from "../../../hooks/useTitle";
 
 const Funding = () => {
   useTitle("Funding");

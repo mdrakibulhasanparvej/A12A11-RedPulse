@@ -18,9 +18,10 @@ import AllDonationRequest from "../pages/PublicPage/AllDonationRequest";
 import DonationRequestDetails from "../pages/Dashboard/Donner/DonationRequestDetails";
 import Search from "../pages/PublicPage/Search";
 import EditDonationRequest from "../pages/Dashboard/Donner/EditDonationRequest";
-import Funding from "../pages/Dashboard/Donner/Funding";
-import PaymentSuccess from "../pages/Dashboard/Donner/PaymentSuccess";
-import PaymentCancel from "../pages/Dashboard/Donner/PaymentCancel";
+import Funding from "../pages/Dashboard/Payment/Funding";
+import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
+import PaymentCancel from "../pages/Dashboard/Payment/PaymentCancel";
+import PaymentHistory from "../pages/Dashboard/Payment/PaymentHistory";
 
 // lazy loaded pages
 const Allusers = lazy(() => import("../pages/Dashboard/Admin/Allusers"));
@@ -116,6 +117,10 @@ const router = createBrowserRouter([
       {
         path: "payment-cenceled",
         Component: PaymentCancel,
+      },
+      {
+        path: "payment-history",
+        Component: PaymentHistory,
       },
     ],
   },

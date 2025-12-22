@@ -2,7 +2,6 @@ import { FaCheckCircle } from "react-icons/fa";
 import { Link, useLocation } from "react-router";
 import useAuth from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const PaymentSuccess = () => {
