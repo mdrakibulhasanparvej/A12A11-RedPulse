@@ -4,6 +4,7 @@ import OurMissionCard from "../../components/Home/OurMissionCard";
 import OurCollab from "../../components/Home/OurCollab";
 import HowToGetBlood from "../../components/Home/HowToGetBlood";
 import useTitle from "../../hooks/useTitle";
+import ContactUs from "../../components/Home/ContactUs";
 
 const Home = () => {
   useTitle("Home");
@@ -13,6 +14,7 @@ const Home = () => {
       <OurMissionCard />
       <OurCollab />
       <HowToGetBlood />
+      <ContactUs />
     </div>
   );
 };

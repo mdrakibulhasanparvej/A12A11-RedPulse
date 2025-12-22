@@ -15,11 +15,14 @@ const Login = () => {
   const { logIn } = useAuth();
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    // console.log("Login Data:", data);
-    logIn(data.email, data.password);
-    toast.success("Login successfully 🎉", { duration: 2000 });
-    navigate("/");
+  const onSubmit = async (data) => {
+    try {
+      await logIn(data.email, data.password);
+      toast.success("Login successfully 🎉");
+      navigate("/");
+    } catch (error) {
+      toast.error("Invalid email or password ❌");
+    }
   };
 
   return (

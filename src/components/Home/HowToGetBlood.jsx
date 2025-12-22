@@ -1,59 +1,79 @@
 import React from "react";
 import Container from "../ui/Container";
-import { PiPencilCircleDuotone } from "react-icons/pi";
+import { FaSearch, FaUserCheck, FaHeartbeat } from "react-icons/fa";
 import { IoHeartCircleOutline } from "react-icons/io5";
 
 const steps = [
   {
     id: 1,
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    title: "Submit a Blood Request",
+    text: "Create a blood request by providing patient details, blood group, and hospital information.",
+    icon: <FaSearch className="text-3xl text-white" />,
   },
   {
     id: 2,
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    title: "Get Matched with Donors",
+    text: "Nearby eligible donors are notified instantly and can respond to your request.",
+    icon: <FaUserCheck className="text-3xl text-white" />,
   },
   {
     id: 3,
-    text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    title: "Receive Blood & Save Life",
+    text: "Once a donor accepts, coordinate with the hospital and receive blood on time.",
+    icon: <FaHeartbeat className="text-3xl text-white" />,
   },
 ];
 
 const HowToGetBlood = () => {
   return (
     <Container>
-      <section className="dark:bg-gray-900 text-gray-800 dark:text-white py-12">
-        <div className=" mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-10">
-            How to get Blood?
+      <section className="py-16 dark:bg-gray-900 text-gray-800 dark:text-white">
+        {/* Title */}
+        <div className="text-center mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold">
+            How to Get <span className="text-[#B32346]">Blood</span>?
           </h2>
+          <p className="mt-3 text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+            A simple, fast, and reliable process designed to save lives when
+            every second matters.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center justify-center">
-            {steps.map((step) => (
-              <div
-                key={step.id}
-                className="flex flex-col items-center text-center"
-              >
-                <div className="bg-pink-600 rounded-full w-16 h-16 flex items-center justify-center mb-4">
-                  <span className="text-white text-xl font-bold">
-                    {step.id}
-                  </span>
-                </div>
-                <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 rounded-lg shadow-md">
-                  <PiPencilCircleDuotone className="h-6 w-6 text-pink-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-800">{step.text}</p>
-                </div>
+        {/* Steps */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {steps.map((step) => (
+            <div
+              key={step.id}
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-8 text-center hover:shadow-lg transition"
+            >
+              {/* Icon Circle */}
+              <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-[#B32346] flex items-center justify-center">
+                {step.icon}
               </div>
-            ))}
-          </div>
 
-          {/* Heart graphic */}
-          <div className="mt-12 flex justify-center">
-            <div className="flex items-center gap-2">
-              <IoHeartCircleOutline className="h-8 w-8 text-pink-500 animate-pulse" />
-              <span className="text-pink-400 font-semibold">
-                ❤️ Blood Connects Us
+              {/* Step Number */}
+              <span className="inline-block mb-2 text-sm font-semibold text-[#B32346]">
+                Step {step.id}
               </span>
+
+              {/* Title */}
+              <h3 className="text-lg font-semibold mb-3">{step.title}</h3>
+
+              {/* Description */}
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                {step.text}
+              </p>
             </div>
+          ))}
+        </div>
+
+        {/* Bottom Heart Message */}
+        <div className="mt-16 flex justify-center">
+          <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-[#B32346]/10">
+            <IoHeartCircleOutline className="h-8 w-8 text-[#B32346] animate-pulse" />
+            <span className="text-[#B32346] font-semibold text-sm sm:text-base">
+              One request. One donor. One life saved.
+            </span>
           </div>
         </div>
       </section>
