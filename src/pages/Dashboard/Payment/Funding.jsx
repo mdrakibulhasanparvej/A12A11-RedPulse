@@ -6,9 +6,12 @@ import Swal from "sweetalert2";
 import useTitle from "../../../hooks/useTitle";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/ui/Loading/LoadingSpinner";
+import useAuth from "../../../hooks/useAuth";
 
 const Funding = () => {
   useTitle("Funding");
+
+  const { user: FBUser } = useAuth();
 
   const { email } = useParams();
   const axiosSecure = useAxiosSecure();
@@ -20,7 +23,7 @@ const Funding = () => {
     isError,
   } = useQuery({
     queryKey: ["user", email],
-    enabled: !!email,
+    enabled: !!FBUser?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/${email}`);
       return res.data;

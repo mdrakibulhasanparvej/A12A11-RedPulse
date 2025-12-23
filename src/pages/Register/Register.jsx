@@ -290,6 +290,7 @@ const Register = () => {
               <label className="label font-bold">Password</label>
               <input
                 type="password"
+                placeholder="*************"
                 {...register("password", { required: true, minLength: 6 })}
                 className="input w-full"
               />
@@ -300,6 +301,7 @@ const Register = () => {
               <label className="label font-bold">Confirm Password</label>
               <input
                 type="password"
+                placeholder="*************"
                 {...register("confirm_password", {
                   validate: (value) =>
                     value === password || "Passwords do not match",

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 const axiosSecure = axios.create({
-  baseURL: "https://redpulses.vercel.app/",
+  baseURL: "https://redpulses.vercel.app",
 });
 
 const useAxiosSecure = () => {
